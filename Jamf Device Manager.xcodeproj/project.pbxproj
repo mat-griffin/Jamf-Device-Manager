@@ -1,0 +1,412 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		289E0A5C158B44D983599774 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289E0A5C158B44D983599773 /* SettingsView.swift */; };
+		526C255961C34508B23708F9 /* SingleManagementStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526C255961C34508B23708F8 /* SingleManagementStateView.swift */; };
+		625D5D1AE2A94F0A88FB6037 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625D5D1AE2A94F0A88FB6036 /* AuthenticationManager.swift */; };
+		828E5ADB2E01824F00F2C48A /* MassManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E5ADA2E01824F00F2C48A /* MassManageView.swift */; };
+		A1B2C3D4E5F6789012345678 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6789012345677 /* DesignSystem.swift */; };
+		D36423C14D4246FE9E5D613E /* JamfActionFramework.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36423C14D4246FE9E5D613D /* JamfActionFramework.swift */; };
+		D96C8F86CBAB4FB7A4D1FF63 /* JamfFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96C8F86CBAB4FB7A4D1FF62 /* JamfFunction.swift */; };
+		FB7EA00C2C6F6BEF00C990E4 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7EA00B2C6F6BEF00C990E4 /* Logger.swift */; };
+		FB8EA01D2C7F7CEF00D990F5 /* CSVHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */; };
+		FB8EA01F2C7F7CEF00D990F6 /* BulkRedeployView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8EA01E2C7F7CEF00D990F6 /* BulkRedeployView.swift */; };
+		FBFE2ED1296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */; };
+		FBFE2ED3296C6A7000351FF3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2ED2296C6A7000351FF3 /* ContentView.swift */; };
+		FBFE2ED5296C6A7100351FF3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */; };
+		FBFE2ED8296C6A7100351FF3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFE2ED7296C6A7100351FF3 /* Preview Assets.xcassets */; };
+		FBFE2EE0296D62E200351FF3 /* JamfProApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2EDF296D62E200351FF3 /* JamfProApi.swift */; };
+		FBFE2EE2296DAEBB00351FF3 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2EE1296DAEBB00351FF3 /* Keychain.swift */; };
+		12345678901234567890ABCD /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12345678901234567890ABCE /* HelpView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		289E0A5C158B44D983599773 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		526C255961C34508B23708F8 /* SingleManagementStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleManagementStateView.swift; sourceTree = "<group>"; };
+		625D5D1AE2A94F0A88FB6036 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		828E5ADA2E01824F00F2C48A /* MassManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MassManageView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6789012345677 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		D36423C14D4246FE9E5D613D /* JamfActionFramework.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JamfActionFramework.swift; sourceTree = "<group>"; };
+		D96C8F86CBAB4FB7A4D1FF62 /* JamfFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JamfFunction.swift; sourceTree = "<group>"; };
+		FB7EA00B2C6F6BEF00C990E4 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVHandler.swift; sourceTree = "<group>"; };
+		FB8EA01E2C7F7CEF00D990F6 /* BulkRedeployView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkRedeployView.swift; sourceTree = "<group>"; };
+		FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jamf Framework Redeploy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jamf_Framework_RedeployApp.swift; sourceTree = "<group>"; };
+		FBFE2ED2296C6A7000351FF3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FBFE2ED7296C6A7100351FF3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		FBFE2ED9296C6A7100351FF3 /* Jamf_Framework_Redeploy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Jamf_Framework_Redeploy.entitlements; sourceTree = "<group>"; };
+		FBFE2EDF296D62E200351FF3 /* JamfProApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JamfProApi.swift; sourceTree = "<group>"; };
+		FBFE2EE1296DAEBB00351FF3 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		12345678901234567890ABCE /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FBFE2ECA296C6A7000351FF3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6E700E3BB1E741708689EBA9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				289E0A5C158B44D983599773 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FBFE2EC4296C6A7000351FF3 = {
+			isa = PBXGroup;
+			children = (
+				FBFE2ECF296C6A7000351FF3 /* Jamf Framework Redeploy */,
+				FBFE2ECE296C6A7000351FF3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FBFE2ECE296C6A7000351FF3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FBFE2ECF296C6A7000351FF3 /* Jamf Framework Redeploy */ = {
+			isa = PBXGroup;
+			children = (
+				828E5ADA2E01824F00F2C48A /* MassManageView.swift */,
+				FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */,
+				FBFE2ED2296C6A7000351FF3 /* ContentView.swift */,
+				FB8EA01E2C7F7CEF00D990F6 /* BulkRedeployView.swift */,
+				625D5D1AE2A94F0A88FB6036 /* AuthenticationManager.swift */,
+				D36423C14D4246FE9E5D613D /* JamfActionFramework.swift */,
+				D96C8F86CBAB4FB7A4D1FF62 /* JamfFunction.swift */,
+				526C255961C34508B23708F8 /* SingleManagementStateView.swift */,
+				6E700E3BB1E741708689EBA9 /* Views */,
+				FBFE2EE1296DAEBB00351FF3 /* Keychain.swift */,
+				FBFE2EDF296D62E200351FF3 /* JamfProApi.swift */,
+				FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */,
+				FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */,
+				FBFE2ED9296C6A7100351FF3 /* Jamf_Framework_Redeploy.entitlements */,
+				FBFE2ED6296C6A7100351FF3 /* Preview Content */,
+				FB7EA00B2C6F6BEF00C990E4 /* Logger.swift */,
+				A1B2C3D4E5F6789012345677 /* DesignSystem.swift */,
+				12345678901234567890ABCE /* HelpView.swift */,
+			);
+			path = "Jamf Framework Redeploy";
+			sourceTree = "<group>";
+		};
+		FBFE2ED6296C6A7100351FF3 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				FBFE2ED7296C6A7100351FF3 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FBFE2ECC296C6A7000351FF3 /* Jamf Framework Redeploy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FBFE2EDC296C6A7100351FF3 /* Build configuration list for PBXNativeTarget "Jamf Framework Redeploy" */;
+			buildPhases = (
+				FBFE2EC9296C6A7000351FF3 /* Sources */,
+				FBFE2ECA296C6A7000351FF3 /* Frameworks */,
+				FBFE2ECB296C6A7000351FF3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Jamf Framework Redeploy";
+			productName = "Jamf Framework Redeploy";
+			productReference = FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FBFE2EC5296C6A7000351FF3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					FBFE2ECC296C6A7000351FF3 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = FBFE2EC8296C6A7000351FF3 /* Build configuration list for PBXProject "Jamf Framework Redeploy" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FBFE2EC4296C6A7000351FF3;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = FBFE2ECE296C6A7000351FF3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FBFE2ECC296C6A7000351FF3 /* Jamf Framework Redeploy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FBFE2ECB296C6A7000351FF3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FBFE2ED8296C6A7100351FF3 /* Preview Assets.xcassets in Resources */,
+				FBFE2ED5296C6A7100351FF3 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FBFE2EC9296C6A7000351FF3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				625D5D1AE2A94F0A88FB6037 /* AuthenticationManager.swift in Sources */,
+				289E0A5C158B44D983599774 /* SettingsView.swift in Sources */,
+				D36423C14D4246FE9E5D613E /* JamfActionFramework.swift in Sources */,
+				D96C8F86CBAB4FB7A4D1FF63 /* JamfFunction.swift in Sources */,
+				526C255961C34508B23708F9 /* SingleManagementStateView.swift in Sources */,
+				FB7EA00C2C6F6BEF00C990E4 /* Logger.swift in Sources */,
+				FBFE2ED3296C6A7000351FF3 /* ContentView.swift in Sources */,
+				FB8EA01F2C7F7CEF00D990F6 /* BulkRedeployView.swift in Sources */,
+				FBFE2EE2296DAEBB00351FF3 /* Keychain.swift in Sources */,
+				828E5ADB2E01824F00F2C48A /* MassManageView.swift in Sources */,
+				FBFE2EE0296D62E200351FF3 /* JamfProApi.swift in Sources */,
+				FB8EA01D2C7F7CEF00D990F5 /* CSVHandler.swift in Sources */,
+				FBFE2ED1296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift in Sources */,
+				A1B2C3D4E5F6789012345678 /* DesignSystem.swift in Sources */,
+				12345678901234567890ABCD /* HelpView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FBFE2EDA296C6A7100351FF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FBFE2EDB296C6A7100351FF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		FBFE2EDD296C6A7100351FF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Jamf Framework Redeploy/Jamf_Framework_Redeploy.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 36;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Jamf Framework Redeploy/Preview Content\"";
+				DEVELOPMENT_TEAM = 8MW79Q3XKA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FBFE2EDE296C6A7100351FF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Jamf Framework Redeploy/Jamf_Framework_Redeploy.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 36;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"Jamf Framework Redeploy/Preview Content\"";
+				DEVELOPMENT_TEAM = 8MW79Q3XKA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FBFE2EC8296C6A7000351FF3 /* Build configuration list for PBXProject "Jamf Framework Redeploy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBFE2EDA296C6A7100351FF3 /* Debug */,
+				FBFE2EDB296C6A7100351FF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FBFE2EDC296C6A7100351FF3 /* Build configuration list for PBXNativeTarget "Jamf Framework Redeploy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBFE2EDD296C6A7100351FF3 /* Debug */,
+				FBFE2EDE296C6A7100351FF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FBFE2EC5296C6A7000351FF3 /* Project object */;
+}
