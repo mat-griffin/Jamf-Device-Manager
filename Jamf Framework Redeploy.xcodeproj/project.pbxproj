@@ -10,6 +10,15 @@
 		FB7EA00C2C6F6BEF00C990E4 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB7EA00B2C6F6BEF00C990E4 /* Logger.swift */; };
 		FB8EA01D2C7F7CEF00D990F5 /* CSVHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */; };
 		FB8EA01F2C7F7CEF00D990F6 /* BulkRedeployView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8EA01E2C7F7CEF00D990F6 /* BulkRedeployView.swift */; };
+		FB9EA02A2C8F7DEF00E990G7 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA02B2C8F7DEF00E990G7 /* AuthenticationManager.swift */; };
+		FB9EA02C2C8F7DEF00E990G8 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA02D2C8F7DEF00E990G8 /* DesignSystem.swift */; };
+		FB9EA02E2C8F7DEF00E990G9 /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA02F2C8F7DEF00E990G9 /* HelpView.swift */; };
+		FB9EA030Z2C8F7DEF00E990H1 /* JamfActionFramework.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA031Z2C8F7DEF00E990H1 /* JamfActionFramework.swift */; };
+		FB9EA032Z2C8F7DEF00E990H2 /* JamfFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA033Z2C8F7DEF00E990H2 /* JamfFunction.swift */; };
+		FB9EA034Z2C8F7DEF00E990H3 /* MassManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA035Z2C8F7DEF00E990H3 /* MassManageView.swift */; };
+		FB9EA036Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA037Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift */; };
+		FB9EA038Z2C8F7DEF00E990H5 /* Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA039Z2C8F7DEF00E990H5 /* Views/SettingsView.swift */; };
+		FB9EA041Z2C8F7DEF00E990H7 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA042Z2C8F7DEF00E990H7 /* AboutView.swift */; };
 		FBFE2ED1296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */; };
 		FBFE2ED3296C6A7000351FF3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2ED2296C6A7000351FF3 /* ContentView.swift */; };
 		FBFE2ED5296C6A7100351FF3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */; };
@@ -22,6 +31,16 @@
 		FB7EA00B2C6F6BEF00C990E4 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVHandler.swift; sourceTree = "<group>"; };
 		FB8EA01E2C7F7CEF00D990F6 /* BulkRedeployView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkRedeployView.swift; sourceTree = "<group>"; };
+		FB9EA02B2C8F7DEF00E990G7 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		FB9EA02D2C8F7DEF00E990G8 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		FB9EA02F2C8F7DEF00E990G9 /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+		FB9EA031Z2C8F7DEF00E990H1 /* JamfActionFramework.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JamfActionFramework.swift; sourceTree = "<group>"; };
+		FB9EA033Z2C8F7DEF00E990H2 /* JamfFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JamfFunction.swift; sourceTree = "<group>"; };
+		FB9EA035Z2C8F7DEF00E990H3 /* MassManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MassManageView.swift; sourceTree = "<group>"; };
+		FB9EA037Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleManagementStateView.swift; sourceTree = "<group>"; };
+		FB9EA039Z2C8F7DEF00E990H5 /* Views/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
+		FB9EA040Z2C8F7DEF00E990H6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FB9EA042Z2C8F7DEF00E990H7 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jamf Framework Redeploy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jamf_Framework_RedeployApp.swift; sourceTree = "<group>"; };
 		FBFE2ED2296C6A7000351FF3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -65,11 +84,21 @@
 				FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */,
 				FBFE2ED2296C6A7000351FF3 /* ContentView.swift */,
 				FB8EA01E2C7F7CEF00D990F6 /* BulkRedeployView.swift */,
+				FB9EA02B2C8F7DEF00E990G7 /* AuthenticationManager.swift */,
+				FB9EA02D2C8F7DEF00E990G8 /* DesignSystem.swift */,
+				FB9EA02F2C8F7DEF00E990G9 /* HelpView.swift */,
+				FB9EA031Z2C8F7DEF00E990H1 /* JamfActionFramework.swift */,
+				FB9EA033Z2C8F7DEF00E990H2 /* JamfFunction.swift */,
+				FB9EA035Z2C8F7DEF00E990H3 /* MassManageView.swift */,
+				FB9EA037Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift */,
+				FB9EA039Z2C8F7DEF00E990H5 /* Views/SettingsView.swift */,
+				FB9EA042Z2C8F7DEF00E990H7 /* AboutView.swift */,
 				FBFE2EE1296DAEBB00351FF3 /* Keychain.swift */,
 				FBFE2EDF296D62E200351FF3 /* JamfProApi.swift */,
 				FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */,
 				FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */,
 				FBFE2ED9296C6A7100351FF3 /* Jamf_Framework_Redeploy.entitlements */,
+				FB9EA040Z2C8F7DEF00E990H6 /* Info.plist */,
 				FBFE2ED6296C6A7100351FF3 /* Preview Content */,
 				FB7EA00B2C6F6BEF00C990E4 /* Logger.swift */,
 			);
@@ -157,6 +186,15 @@
 				FB7EA00C2C6F6BEF00C990E4 /* Logger.swift in Sources */,
 				FBFE2ED3296C6A7000351FF3 /* ContentView.swift in Sources */,
 				FB8EA01F2C7F7CEF00D990F6 /* BulkRedeployView.swift in Sources */,
+				FB9EA02A2C8F7DEF00E990G7 /* AuthenticationManager.swift in Sources */,
+				FB9EA02C2C8F7DEF00E990G8 /* DesignSystem.swift in Sources */,
+				FB9EA02E2C8F7DEF00E990G9 /* HelpView.swift in Sources */,
+				FB9EA030Z2C8F7DEF00E990H1 /* JamfActionFramework.swift in Sources */,
+				FB9EA032Z2C8F7DEF00E990H2 /* JamfFunction.swift in Sources */,
+				FB9EA034Z2C8F7DEF00E990H3 /* MassManageView.swift in Sources */,
+				FB9EA036Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift in Sources */,
+				FB9EA038Z2C8F7DEF00E990H5 /* Views/SettingsView.swift in Sources */,
+				FB9EA041Z2C8F7DEF00E990H7 /* AboutView.swift in Sources */,
 				FBFE2EE2296DAEBB00351FF3 /* Keychain.swift in Sources */,
 				FBFE2EE0296D62E200351FF3 /* JamfProApi.swift in Sources */,
 				FB8EA01D2C7F7CEF00D990F5 /* CSVHandler.swift in Sources */,
@@ -298,15 +336,15 @@
 				DEVELOPMENT_TEAM = 8MW79Q3XKA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Jamf Framework Redeploy/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -328,15 +366,15 @@
 				DEVELOPMENT_TEAM = 8MW79Q3XKA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Jamf Framework Redeploy/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

@@ -1,8 +1,7 @@
 //
 //  CSVHandler.swift
-//  Jamf Framework Redeploy
+//  Jamf Device Manager
 //
-//  Created by Claude Code on 12/06/2025.
 //
 
 import Foundation
@@ -15,6 +14,7 @@ struct ComputerRecord: Identifiable, Hashable {
     let notes: String?
     var status: DeploymentStatus = .pending
     var errorMessage: String?
+    var jamfComputerID: Int?
     
     enum DeploymentStatus {
         case pending
@@ -31,10 +31,15 @@ class CSVHandler: ObservableObject {
     @Published var totalCount = 0
     
     func parseCSV(from url: URL) throws -> [ComputerRecord] {
-        guard url.startAccessingSecurityScopedResource() else {
-            throw CSVError.parseError(line: 0, message: "Unable to access the selected file due to security restrictions")
+        let hasAccess = url.startAccessingSecurityScopedResource()
+        defer { 
+            if hasAccess {
+                url.stopAccessingSecurityScopedResource() 
+            }
         }
-        defer { url.stopAccessingSecurityScopedResource() }
+        
+        // Try to read the file even if security scoped resource access fails
+        // This might work for drag-and-drop scenarios
         
         let content = try String(contentsOf: url)
         let lines = content.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
@@ -141,10 +146,13 @@ class CSVHandler: ObservableObject {
         processedCount = 0
     }
     
-    func updateComputerStatus(_ computerId: UUID, status: ComputerRecord.DeploymentStatus, error: String? = nil) {
+    func updateComputerStatus(_ computerId: UUID, status: ComputerRecord.DeploymentStatus, error: String? = nil, jamfComputerID: Int? = nil) {
         if let index = computers.firstIndex(where: { $0.id == computerId }) {
             computers[index].status = status
             computers[index].errorMessage = error
+            if let jamfID = jamfComputerID {
+                computers[index].jamfComputerID = jamfID
+            }
             
             if status == .completed || status == .failed {
                 processedCount += 1

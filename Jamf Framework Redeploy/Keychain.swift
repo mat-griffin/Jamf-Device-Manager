@@ -1,9 +1,9 @@
 //
 //  Keychain.swift
-//  Jamf Framework Redeploy
+//  Jamf Device Manager
 //
 //  Created by Richard Mallion on 10/01/2023.
-//
+//  Updated by Mat Griffin on 18/06/2025.
 
 import Foundation
 import Security
