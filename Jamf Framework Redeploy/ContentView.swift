@@ -32,19 +32,25 @@ struct ContentView: View {
             // Header Section
             HStack(spacing: 16) {
                 // App Title
-                HStack {
-                    Image(systemName: "gear.badge")
-                        .font(.title2)
-                        .foregroundColor(.accentColor)
-                    VStack(alignment: .leading) {
-                        Text("Jamf Device Manager")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                        Text("Multi-function Jamf Pro Tool")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                Button(action: {
+                    showingAbout = true
+                }) {
+                    HStack {
+                        Image(nsImage: NSApplication.shared.applicationIconImage ?? NSImage())
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                        VStack(alignment: .leading) {
+                            Text("Jamf Device Manager")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                            Text("Multi-function Jamf Pro Tool")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    .foregroundColor(.primary)
                 }
+                .buttonStyle(PlainButtonStyle())
                 
                 Spacer()
                 
