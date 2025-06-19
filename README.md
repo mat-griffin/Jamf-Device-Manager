@@ -24,8 +24,13 @@ A comprehensive macOS application for managing Jamf Pro devices with both indivi
 - **Detailed Error Reporting**: Specific failure reasons and comprehensive status updates
 - **Jamf Pro Integration**: Direct links to device records in Jamf Pro
 
+### 🔍 Search & Discovery
+- **Jamf Search**: Search and browse devices directly from within the application
+- **Device Information**: View comprehensive device details and user information
+- **Real-time Device Status**: Live status updates and management state information
+
 ### 🎨 Modern User Experience
-- **4-Tab Interface**: Organized workflow with Single Redeploy, Mass Redeploy, Manage & Lock, and Mass Manage & Lock
+- **5-Tab Interface**: Organized workflow with Single Redeploy, Mass Redeploy, Manage & Lock, Mass Manage & Lock, and Jamf Search
 - **Built-in Help System**: Comprehensive help documentation with contextual tooltips
 - **Dark/Light Mode**: Automatic theme switching support
 - **Professional Design**: Consistent design system with smooth animations
@@ -33,9 +38,14 @@ A comprehensive macOS application for managing Jamf Pro devices with both indivi
 ## 📷 Screenshots
 
 ### Main Interface
-The modern 4-tab interface provides clear organization of all functionality:
+The modern 5-tab interface provides clear organization of all functionality:
 
 ![Main Interface](images/main_interface.png)
+
+### Jamf Search
+Simple search and Advanced search:
+
+![Jamf Search](https://github.com/mat-griffin/Jamf-Device-Manager/blob/main/images/jamf_search.png)
 
 ### Bulk Operations with Progress Tracking
 Real-time progress monitoring for bulk operations:
@@ -89,6 +99,7 @@ If so open your System Settings, goto Privacy and scroll down to the Security se
 - **Mass Redeploy**: Bulk framework operations via CSV
 - **Manage & Lock**: Individual device management and locking  
 - **Mass Manage & Lock**: Bulk management operations
+- **Jamf Search**: Search and browse devices in your Jamf Pro environment
 
 ## 📄 CSV File Format
 
@@ -242,7 +253,12 @@ See the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed enterprise dep
 
 ## 🔄 Version History
 
-### v2.0.0 (Current) - Complete Redesign
+### v2.1.0 (Current) - Jamf Search Integration
+- **New**: Jamf Search tab for browsing and searching devices
+- **New**: Real-time device search with comprehensive filtering
+- **New**: Direct device information access within the application
+
+### v2.0.0 - Complete Redesign
 - **New**: 4-tab interface with comprehensive bulk operations
 - **New**: Device management state control and locking
 - **New**: Built-in help system and comprehensive documentation
