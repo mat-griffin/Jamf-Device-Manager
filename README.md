@@ -1,7 +1,8 @@
 # Jamf Management Tool
 
 The inspiration for this app is from the Jamf Framework Redeploy app
-by redScoder.
+by red5coder.
+
 Github: https://github.com/red5coder/Jamf-Framework-Redeploy
 
 A comprehensive macOS application for managing Jamf Pro devices with both individual and bulk operations. Streamline framework redeploys, management state changes, and device locking operations through an intuitive interface.
@@ -61,6 +62,15 @@ Comprehensive device management with optional security features:
 
 
 ## 🚀 Quick Start
+
+##### Note:
+On download the .pkg. Your Mac may display a warning dialogue.
+
+<img width="300" alt="Open Dialogue warning" src="https://raw.githubusercontent.com/mat-griffin/Jamf-Framework-Redeploy/refs/heads/main/images/dialogue.png">
+
+If so open your System Settings, goto Privacy and scroll down to the Security section and click Open Anyway and follow any other on screen prompts to allow the app to run.
+
+<img width="450" alt="Approve Anyway in System Settings" src="https://raw.githubusercontent.com/mat-griffin/Jamf-Framework-Redeploy/refs/heads/main/images/approveinstall.png">
 
 ### 1. Download and Install
 - Download the latest release from the [Releases](../../releases) page

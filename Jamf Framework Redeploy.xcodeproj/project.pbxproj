@@ -19,6 +19,7 @@
 		FB9EA036Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA037Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift */; };
 		FB9EA038Z2C8F7DEF00E990H5 /* Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA039Z2C8F7DEF00E990H5 /* Views/SettingsView.swift */; };
 		FB9EA041Z2C8F7DEF00E990H7 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA042Z2C8F7DEF00E990H7 /* AboutView.swift */; };
+		FB9EA043Z2C8F7DEF00E990H8 /* SearchJamfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9EA044Z2C8F7DEF00E990H8 /* SearchJamfView.swift */; };
 		FBFE2ED1296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */; };
 		FBFE2ED3296C6A7000351FF3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFE2ED2296C6A7000351FF3 /* ContentView.swift */; };
 		FBFE2ED5296C6A7100351FF3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */; };
@@ -41,6 +42,7 @@
 		FB9EA039Z2C8F7DEF00E990H5 /* Views/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
 		FB9EA040Z2C8F7DEF00E990H6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB9EA042Z2C8F7DEF00E990H7 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		FB9EA044Z2C8F7DEF00E990H8 /* SearchJamfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchJamfView.swift; sourceTree = "<group>"; };
 		FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jamf Framework Redeploy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jamf_Framework_RedeployApp.swift; sourceTree = "<group>"; };
 		FBFE2ED2296C6A7000351FF3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 				FB9EA037Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift */,
 				FB9EA039Z2C8F7DEF00E990H5 /* Views/SettingsView.swift */,
 				FB9EA042Z2C8F7DEF00E990H7 /* AboutView.swift */,
+				FB9EA044Z2C8F7DEF00E990H8 /* SearchJamfView.swift */,
 				FBFE2EE1296DAEBB00351FF3 /* Keychain.swift */,
 				FBFE2EDF296D62E200351FF3 /* JamfProApi.swift */,
 				FB8EA01C2C7F7CEF00D990F5 /* CSVHandler.swift */,
@@ -195,6 +198,7 @@
 				FB9EA036Z2C8F7DEF00E990H4 /* SingleManagementStateView.swift in Sources */,
 				FB9EA038Z2C8F7DEF00E990H5 /* Views/SettingsView.swift in Sources */,
 				FB9EA041Z2C8F7DEF00E990H7 /* AboutView.swift in Sources */,
+				FB9EA043Z2C8F7DEF00E990H8 /* SearchJamfView.swift in Sources */,
 				FBFE2EE2296DAEBB00351FF3 /* Keychain.swift in Sources */,
 				FBFE2EE0296D62E200351FF3 /* JamfProApi.swift in Sources */,
 				FB8EA01D2C7F7CEF00D990F5 /* CSVHandler.swift in Sources */,
@@ -346,7 +350,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -378,7 +382,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

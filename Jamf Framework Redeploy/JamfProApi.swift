@@ -288,6 +288,84 @@ struct JamfProAPI {
         }
         return httpResponse?.statusCode
     }
+    
+    // MARK: - Search Functions
+    
+    /// Search for computers by name
+    func searchComputersByName(jssURL: String, authToken: String, searchTerm: String) async -> ([ComputerSummary], Int?) {
+        Logger.loggerapi.info("About to search computers by name: \(searchTerm, privacy: .public)")
+        guard var jamfSearchEndpoint = URLComponents(string: jssURL) else {
+            return ([], nil)
+        }
+        
+        jamfSearchEndpoint.path = "/JSSResource/computers/match/\(searchTerm)"
+        
+        guard let url = jamfSearchEndpoint.url else {
+            return ([], nil)
+        }
+        
+        var searchRequest = URLRequest(url: url)
+        searchRequest.httpMethod = "GET"
+        searchRequest.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        searchRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        searchRequest.timeoutInterval = 15.0
+        
+        guard let (data, response) = try? await URLSession.shared.data(for: searchRequest)
+        else {
+            return ([], nil)
+        }
+        
+        let httpResponse = response as? HTTPURLResponse
+        if let httpResponse {
+            Logger.loggerapi.info("Response from computer search: \(httpResponse.statusCode, privacy: .public)")
+        }
+        
+        do {
+            let searchResults = try JSONDecoder().decode(ComputerSearchResults.self, from: data)
+            return (searchResults.computers, httpResponse?.statusCode)
+        } catch {
+            Logger.loggerapi.error("Failed to decode computer search results: \(error.localizedDescription, privacy: .public)")
+            return ([], httpResponse?.statusCode)
+        }
+    }
+    
+    /// Get all computers (with pagination support)
+    func getAllComputers(jssURL: String, authToken: String, subset: String = "basic") async -> ([ComputerSummary], Int?) {
+        Logger.loggerapi.info("About to fetch all computers")
+        guard var jamfComputersEndpoint = URLComponents(string: jssURL) else {
+            return ([], nil)
+        }
+        
+        jamfComputersEndpoint.path = "/JSSResource/computers/subset/\(subset)"
+        
+        guard let url = jamfComputersEndpoint.url else {
+            return ([], nil)
+        }
+        
+        var computersRequest = URLRequest(url: url)
+        computersRequest.httpMethod = "GET"
+        computersRequest.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        computersRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        computersRequest.timeoutInterval = 30.0
+        
+        guard let (data, response) = try? await URLSession.shared.data(for: computersRequest)
+        else {
+            return ([], nil)
+        }
+        
+        let httpResponse = response as? HTTPURLResponse
+        if let httpResponse {
+            Logger.loggerapi.info("Response from get all computers: \(httpResponse.statusCode, privacy: .public)")
+        }
+        
+        do {
+            let allComputers = try JSONDecoder().decode(AllComputersResponse.self, from: data)
+            return (allComputers.computers, httpResponse?.statusCode)
+        } catch {
+            Logger.loggerapi.error("Failed to decode all computers: \(error.localizedDescription, privacy: .public)")
+            return ([], httpResponse?.statusCode)
+        }
+    }
 }
 
 // MARK: - Jamf Pro Auth Model
@@ -308,10 +386,12 @@ struct Computer: Codable {
 struct ComputerDetail: Codable {
     let general: General
     let location: Location?
+    let hardware: Hardware?
 
     enum CodingKeys: String, CodingKey {
         case general
         case location
+        case hardware
     }
 }
 
@@ -321,6 +401,10 @@ struct General: Codable {
     let serialNumber: String?
     let udid: String?
     let remoteManagement: RemoteManagement?
+    let lastInventoryUpdate: String?
+    let reportDate: String?
+    let lastContactTime: String?
+    let lastEnrolledDate: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -328,6 +412,10 @@ struct General: Codable {
         case serialNumber = "serial_number"
         case udid
         case remoteManagement = "remote_management"
+        case lastInventoryUpdate = "last_inventory_update"
+        case reportDate = "report_date"
+        case lastContactTime = "last_contact_time"
+        case lastEnrolledDate = "last_enrolled_date_utc"
     }
 }
 
@@ -363,6 +451,38 @@ struct Location: Codable {
     }
 }
 
+struct Hardware: Codable {
+    let model: String?
+    let modelIdentifier: String?
+    let osName: String?
+    let osVersion: String?
+    let osBuild: String?
+    let processorType: String?
+    let processorArchitecture: String?
+    let processorSpeed: Int?
+    let numberOfProcessors: Int?
+    let numberOfCores: Int?
+    let totalRAM: Int?
+    let totalDisk: Int?
+    let availableDisk: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case model
+        case modelIdentifier = "model_identifier"
+        case osName = "os_name"
+        case osVersion = "os_version"
+        case osBuild = "os_build"
+        case processorType = "processor_type"
+        case processorArchitecture = "processor_architecture"
+        case processorSpeed = "processor_speed_mhz"
+        case numberOfProcessors = "number_processors"
+        case numberOfCores = "number_cores"
+        case totalRAM = "total_ram"
+        case totalDisk = "boot_rom_version"
+        case availableDisk = "available_ram_slots"
+    }
+}
+
 // MARK: - Management State Result Types
 struct ManagementStateResult {
     let computerID: Int
@@ -394,5 +514,31 @@ enum JamfActionResult {
     case success(message: String)
     case failure(error: String)
     case partialSuccess(message: String, details: [String])
+}
+
+// MARK: - Search Data Models
+
+struct ComputerSearchResults: Codable {
+    let computers: [ComputerSummary]
+}
+
+struct AllComputersResponse: Codable {
+    let computers: [ComputerSummary]
+}
+
+struct ComputerSummary: Codable {
+    let id: Int
+    let name: String
+    let serialNumber: String?
+    let udid: String?
+    let macAddress: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case serialNumber = "serial_number"
+        case udid
+        case macAddress = "mac_address"
+    }
 }
 

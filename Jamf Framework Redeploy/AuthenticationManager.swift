@@ -7,6 +7,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class AuthenticationManager: ObservableObject {
     @Published var jssURL: String = ""
     @Published var clientID: String = ""
@@ -77,8 +78,8 @@ class AuthenticationManager: ObservableObject {
         
         // Check if the action framework has a valid token
         if actionFramework.hasValidToken() {
-            // Sync the isAuthenticated flag
-            isAuthenticated = true
+            // Sync the isAuthenticated flag on main thread
+            self.isAuthenticated = true
             return true
         }
         

@@ -189,17 +189,19 @@ struct ContentView: View {
             VStack(alignment: .leading) {
                 Group {
                     if selectedTab == 0 {
+                        SearchJamfView()
+                    } else if selectedTab == 1 {
                         SingleRedeployTabView(
                             jamfURL: $jamfURL,
                             userName: $userName,
                             password: $password,
                             savePassword: $savePassword
                         )
-                    } else if selectedTab == 1 {
-                        BulkRedeployView(csvHandler: massRedeployCSVHandler)
                     } else if selectedTab == 2 {
-                        SingleManagementStateView()
+                        BulkRedeployView(csvHandler: massRedeployCSVHandler)
                     } else if selectedTab == 3 {
+                        SingleManagementStateView()
+                    } else if selectedTab == 4 {
                         MassManageView(csvHandler: massManageCSVHandler)
                     } else {
                         ComingSoonView(tabName: tabItems[selectedTab].title)
@@ -282,6 +284,7 @@ struct ContentView: View {
     
     private var tabItems: [(title: String, icon: String)] {
         [
+            ("Search Jamf", "magnifyingglass"),
             ("Framework Redeploy", "desktopcomputer"),
             ("Mass Redeploy", "square.grid.3x3"),
             ("Manage & Lock", "switch.2"),
