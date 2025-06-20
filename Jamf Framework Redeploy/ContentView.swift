@@ -10,6 +10,7 @@
 //
 
 import SwiftUI
+import Charts
 
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthenticationManager
@@ -189,19 +190,21 @@ struct ContentView: View {
             VStack(alignment: .leading) {
                 Group {
                     if selectedTab == 0 {
-                        SearchJamfView()
+                        DashboardView()
                     } else if selectedTab == 1 {
+                        SearchJamfView()
+                    } else if selectedTab == 2 {
                         SingleRedeployTabView(
                             jamfURL: $jamfURL,
                             userName: $userName,
                             password: $password,
                             savePassword: $savePassword
                         )
-                    } else if selectedTab == 2 {
-                        BulkRedeployView(csvHandler: massRedeployCSVHandler)
                     } else if selectedTab == 3 {
-                        SingleManagementStateView()
+                        BulkRedeployView(csvHandler: massRedeployCSVHandler)
                     } else if selectedTab == 4 {
+                        SingleManagementStateView()
+                    } else if selectedTab == 5 {
                         MassManageView(csvHandler: massManageCSVHandler)
                     } else {
                         ComingSoonView(tabName: tabItems[selectedTab].title)
@@ -266,9 +269,9 @@ struct ContentView: View {
         .onAppear {
             loadCredentials()
         }
-        .onChange(of: jamfURL) { _ in saveCredentials() }
-        .onChange(of: userName) { _ in saveCredentials() }
-        .onChange(of: savePassword) { _ in saveCredentials() }
+        .onChange(of: jamfURL) { _, _ in saveCredentials() }
+        .onChange(of: userName) { _, _ in saveCredentials() }
+        .onChange(of: savePassword) { _, _ in saveCredentials() }
         .sheet(isPresented: $showingSettings) {
             SettingsView(authManager: authManager, isPresented: $showingSettings)
                 .frame(minWidth: 500, minHeight: 600)
@@ -284,6 +287,7 @@ struct ContentView: View {
     
     private var tabItems: [(title: String, icon: String)] {
         [
+            ("Dashboard", "chart.bar.fill"),
             ("Search Jamf", "magnifyingglass"),
             ("Framework Redeploy", "desktopcomputer"),
             ("Mass Redeploy", "square.grid.3x3"),

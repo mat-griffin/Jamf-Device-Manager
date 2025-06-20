@@ -12,6 +12,7 @@ struct HelpView: View {
     
     private let helpSections = [
         ("Getting Started", "questionmark.circle"),
+        ("Dashboard", "chart.bar"),
         ("CSV Format", "doc.text"),
         ("Jamf Pro API Setup", "key"),
         ("Troubleshooting", "wrench.and.screwdriver"),
@@ -88,12 +89,14 @@ struct HelpView: View {
                                     case 0:
                                         GettingStartedContent()
                                     case 1:
-                                        CSVFormatContent()
+                                        DashboardContent()
                                     case 2:
-                                        APISetupContent()
+                                        CSVFormatContent()
                                     case 3:
-                                        TroubleshootingContent()
+                                        APISetupContent()
                                     case 4:
+                                        TroubleshootingContent()
+                                    case 5:
                                         AppInfoContent()
                                     default:
                                         GettingStartedContent()
@@ -136,6 +139,7 @@ struct GettingStartedContent: View {
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .padding(.top)
+                    Text("   • **Dashboard**: Fleet overview with statistics and charts")
                     Text("   • **Single Redeploy**: Individual device framework redeploy")
                     Text("   • **Mass Redeploy**: Bulk framework operations via CSV")
                     Text("   • **Manage & Lock**: Individual device management and locking")
@@ -150,6 +154,110 @@ struct GettingStartedContent: View {
                     Text("• **Authentication**: Green dot = connected, red dot = not authenticated")
                     Text("• **Progress**: Watch the progress bar during bulk operations")
                     Text("• **Results**: Click device serial numbers to open in Jamf Pro")
+                }
+            }
+        }
+    }
+}
+
+struct DashboardContent: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+            Text("Dashboard")
+                .font(.title)
+                .fontWeight(.bold)
+            
+            HelpSection(title: "Overview", icon: "chart.bar") {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                    Text("The Dashboard provides a comprehensive view of your Jamf-managed device fleet using Advanced Computer Search groups.")
+                    Text("• **Device Statistics**: Total managed devices and check-in status")
+                    Text("• **macOS Version Distribution**: Bar chart showing OS versions")
+                    Text("• **Device Model Distribution**: Donut chart showing hardware models")
+                }
+            }
+            
+            HelpSection(title: "Advanced Search Group Filter", icon: "magnifyingglass.circle") {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                     Text("**How It Works:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .padding(.top)
+                    Text("You can filter which Advanced Searches are available in the Dashboard by setting a prefix word filter. For example if in Jamf you have a number of Advanced Search groups all prefixed with the word Report: (e.g. Report: All Macs) then enter Report as you filter to just show groups starting with the word Report.")
+                    Text("Note that the filter is case-sensitive.")
+
+                    Text("**Setting Up the Filter:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Text("1. Go to Settings (⚙️) or press ⌘,")
+                    Text("2. Scroll to the 'Dashboard Settings' panel")
+                    Text("3. Enter a prefix in 'Advanced Search Group Filter'")
+                    Text("   • Example: \"Report:\" to show only searches starting with \"Report:\"")
+                    Text("   • Leave blank to show all Advanced Searches")
+                    Text("4. Click 'Save & Close'")
+                    
+                }
+            }
+            
+            HelpSection(title: "Creating Organized Advanced Searches in Jamf Pro", icon: "plus.circle") {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                    Text("**Recommended Naming Convention:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Text("Use consistent prefixes for related searches:")
+                    Text("• **Dashboard:** - For dashboard-specific groups")
+                    Text("• **Report:** - For reporting groups")
+                    Text("• **Team:** - For department/team groups")
+                    Text("• **Location:** - For site/location groups")
+                    
+                    Text("**Creating a Dashboard Search in Jamf Pro:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .padding(.top)
+                    Text("1. Log into Jamf Pro as administrator")
+                    Text("2. Go to Computers → Search Inventory → Advanced Search")
+                    Text("3. Click 'New' to create a new search")
+                    Text("4. Enter name with your chosen prefix (e.g., \"Dashboard: All Managed Devices\")")
+                    Text("5. Add criteria to define your device group:")
+                    Text("   • Management Status: Managed")
+                    Text("   • Computer Group Membership: Specific groups")
+                    Text("   • Operating System: macOS versions")
+                    Text("   • Department: Specific departments")
+                    Text("6. Set Display to show relevant fields:")
+                    Text("   • Computer Name, Serial Number, Model")
+                    Text("   • Operating System Version, Last Check-in")
+                    Text("7. Save the search")
+                    
+                    Text("**Best Practices:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .padding(.top)
+                    Text("• Use descriptive names after the prefix")
+                    Text("• Keep search criteria focused for better performance")
+                    Text("• Include fields needed for dashboard statistics")
+                    Text("• Test searches before using in production")
+                }
+            }
+            
+            HelpSection(title: "Using the Dashboard", icon: "play.circle") {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                    Text("**Step-by-Step:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Text("1. **Select Search Group**: Choose an Advanced Search from the dropdown")
+                    Text("2. **Load Data**: Click 'Refresh Data' or data loads automatically")
+                    Text("3. **View Statistics**: Review device counts and check-in status")
+                    Text("4. **Analyze Charts**: Hover over elements for detailed information")
+                    Text("   • Bar chart: Hover bars for OS version details")
+                    Text("   • Donut chart: Hover legend items to highlight segments")
+                    
+                    Text("**Performance Tips:**")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .padding(.top)
+                    Text("• Dashboard data is cached for 5 minutes for faster loading")
+                    Text("• Large search groups (1000+ devices) may take longer to load")
+                    Text("• Use focused searches for better performance")
+                    Text("• Refresh data when you need current information")
                 }
             }
         }
@@ -399,7 +507,7 @@ struct HelpSection<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(DesignSystem.Spacing.lg)
         .background(DesignSystem.Colors.cardBackground)
-        .cornerRadius(DesignSystem.cornerRadius)
+        .cornerRadius(DesignSystem.CornerRadius.md)
         .shadow(radius: 2, y: 1)
     }
 }

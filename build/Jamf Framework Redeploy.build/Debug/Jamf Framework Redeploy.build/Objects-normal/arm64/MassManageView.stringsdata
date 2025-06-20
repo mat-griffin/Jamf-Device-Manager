@@ -1,0 +1,128 @@
+{
+  "source": "/Users/matgriffin/Documents/GitHub/Jamf-Framework-Redeploy-Management/Jamf Framework Redeploy/MassManageView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Operation Complete",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lock Confirmation",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "Continue",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "This will lock all computers during the management state change. Continue?",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "CSV Import",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld computers loaded",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "Management Options",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 136
+        }
+      },
+      {
+        "comment": "",
+        "key": "Select the target management state:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lock devices with random PINs",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Computer List",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 213
+        }
+      },
+      {
+        "comment": "",
+        "key": "Drop Zone",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "No computers loaded",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 242
+        }
+      },
+      {
+        "comment": "",
+        "key": "Import a CSV file or drag one here to get started",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 246
+        }
+      }
+    ]
+  },
+  "version": 1
+}

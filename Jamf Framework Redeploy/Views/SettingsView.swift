@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var tempClientID: String = ""
     @State private var tempClientSecret: String = ""
     @State private var tempSaveCredentials: Bool = false
+    @State private var tempDashboardSearchFilter: String = ""
     @State private var isTestingConnection = false
     @State private var showingTestResult = false
     @State private var testResultTitle = ""
@@ -20,33 +21,34 @@ struct SettingsView: View {
     @State private var testSuccess = false
     
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // Title bar with close button
-                HStack {
-                    Text("Settings")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    Spacer()
-                    
-                    Button(action: { isPresented = false }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.secondary)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .keyboardShortcut(.escape, modifiers: [])
-                }
-                .padding(DesignSystem.Spacing.lg)
-                .background(DesignSystem.Colors.cardBackground)
-                .overlay(
-                    Rectangle()
-                        .frame(height: 1)
-                        .foregroundColor(DesignSystem.Colors.border),
-                    alignment: .bottom
-                )
+        VStack(spacing: 0) {
+            // Title bar with close button
+            HStack {
+                Text("Settings")
+                    .font(.title2)
+                    .fontWeight(.semibold)
                 
+                Spacer()
+                
+                Button(action: { isPresented = false }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .keyboardShortcut(.escape, modifiers: [])
+            }
+            .padding(DesignSystem.Spacing.lg)
+            .background(DesignSystem.Colors.cardBackground)
+            .overlay(
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(DesignSystem.Colors.border),
+                alignment: .bottom
+            )
+            
+            // Scrollable content area
+            ScrollView(.vertical, showsIndicators: true) {
                 HStack {
                     Spacer()
                     VStack(spacing: DesignSystem.Spacing.md) {
@@ -69,13 +71,13 @@ struct SettingsView: View {
                         }
                         .padding(DesignSystem.Spacing.lg)
                         .background(DesignSystem.Colors.cardBackground)
-                        .cornerRadius(DesignSystem.cornerRadius)
+                        .cornerRadius(DesignSystem.CornerRadius.md)
                         .overlay(
-                            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                                 .stroke(DesignSystem.Colors.border, lineWidth: 1)
                         )
-                        
-                        // Authentication Settings
+                    
+                    // Authentication Settings
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                             Label("Jamf Pro API Credentials", systemImage: "key.fill")
                                 .font(.headline)
@@ -111,14 +113,37 @@ struct SettingsView: View {
                         }
                         .padding(DesignSystem.Spacing.lg)
                         .background(DesignSystem.Colors.cardBackground)
-                        .cornerRadius(DesignSystem.cornerRadius)
+                        .cornerRadius(DesignSystem.CornerRadius.md)
                         .overlay(
-                            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
+                                .stroke(DesignSystem.Colors.border, lineWidth: 1)
+                        )
+                        
+                        // Dashboard Settings
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                            Label("Dashboard Settings", systemImage: "chart.bar")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            
+                            VStack(spacing: DesignSystem.Spacing.sm) {
+                                FormField(
+                                    label: "Advanced Search Group Filter",
+                                    placeholder: "e.g. Report: (or leave blank for all groups)",
+                                    text: $tempDashboardSearchFilter,
+                                    helpText: "Enter a prefix to filter which Advanced Search groups appear in the Dashboard dropdown. Only searches beginning with this text will be shown. Leave blank to show all searches."
+                                )
+                            }
+                        }
+                        .padding(DesignSystem.Spacing.lg)
+                        .background(DesignSystem.Colors.cardBackground)
+                        .cornerRadius(DesignSystem.CornerRadius.md)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                                 .stroke(DesignSystem.Colors.border, lineWidth: 1)
                         )
                         
                         HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
-                            // Connection Status
+                    // Connection Status
                             VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
                                 Label("Connection Status", systemImage: "wifi")
                                     .font(.headline)
@@ -150,9 +175,9 @@ struct SettingsView: View {
                             }
                             .padding(DesignSystem.Spacing.lg)
                             .background(DesignSystem.Colors.cardBackground)
-                            .cornerRadius(DesignSystem.cornerRadius)
+                            .cornerRadius(DesignSystem.CornerRadius.md)
                             .overlay(
-                                RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+                                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                                     .stroke(DesignSystem.Colors.border, lineWidth: 1)
                             )
                             .frame(maxWidth: .infinity)
@@ -185,9 +210,9 @@ struct SettingsView: View {
                             }
                             .padding(DesignSystem.Spacing.lg)
                             .background(DesignSystem.Colors.cardBackground)
-                            .cornerRadius(DesignSystem.cornerRadius)
+                            .cornerRadius(DesignSystem.CornerRadius.md)
                             .overlay(
-                                RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+                                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                                     .stroke(DesignSystem.Colors.border, lineWidth: 1)
                             )
                             .frame(maxWidth: .infinity)
@@ -195,11 +220,10 @@ struct SettingsView: View {
                         
                         Spacer(minLength: 0)
                     }
-                    .frame(maxWidth: geometry.size.width * 0.9)
+                    .frame(maxWidth: 500)
                     Spacer()
                 }
                 .padding(DesignSystem.Spacing.lg)
-                .background(Color(NSColor.windowBackgroundColor))
             }
         }
         .frame(minWidth: 500, minHeight: 600)
@@ -219,6 +243,7 @@ struct SettingsView: View {
         tempClientID = authManager.clientID
         tempClientSecret = authManager.clientSecret
         tempSaveCredentials = authManager.saveCredentials
+        tempDashboardSearchFilter = authManager.dashboardSearchFilter
     }
     
     private func testConnection() {
@@ -237,6 +262,7 @@ struct SettingsView: View {
                 clientSecret: tempClientSecret,
                 saveCredentials: tempSaveCredentials
             )
+            authManager.updateDashboardSearchFilter(tempDashboardSearchFilter)
             
             let success = await authManager.authenticate()
             
@@ -266,6 +292,9 @@ struct SettingsView: View {
             clientSecret: tempClientSecret,
             saveCredentials: tempSaveCredentials
         )
+        
+        // Update dashboard search filter
+        authManager.updateDashboardSearchFilter(tempDashboardSearchFilter)
         
         // Close the settings dialog after saving
         isPresented = false

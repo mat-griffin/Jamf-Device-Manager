@@ -15,6 +15,7 @@ class AuthenticationManager: ObservableObject {
     @Published var saveCredentials: Bool = false
     @Published var isAuthenticated: Bool = false
     @Published var authenticationError: String? = nil
+    @Published var dashboardSearchFilter: String = ""
     
     private var currentToken: String?
     private var tokenExpiry: Date?
@@ -94,6 +95,7 @@ class AuthenticationManager: ObservableObject {
         jssURL = defaults.string(forKey: "jamfURL") ?? ""
         clientID = defaults.string(forKey: "clientID") ?? ""
         saveCredentials = defaults.bool(forKey: "saveCredentials")
+        dashboardSearchFilter = defaults.string(forKey: "dashboardSearchFilter") ?? ""
         
         if saveCredentials {
             let credentialsArray = Keychain().retrieve(service: "co.uk.mallion.Jamf-Framework-Redeploy")
@@ -109,6 +111,7 @@ class AuthenticationManager: ObservableObject {
         defaults.set(jssURL, forKey: "jamfURL")
         defaults.set(clientID, forKey: "clientID")
         defaults.set(saveCredentials, forKey: "saveCredentials")
+        defaults.set(dashboardSearchFilter, forKey: "dashboardSearchFilter")
         
         if saveCredentials && !clientID.isEmpty && !clientSecret.isEmpty {
             Keychain().save(service: "co.uk.mallion.Jamf-Framework-Redeploy", account: clientID, data: clientSecret)
@@ -132,6 +135,15 @@ class AuthenticationManager: ObservableObject {
         persistCredentials()
     }
     
+    func updateDashboardSearchFilter(_ filter: String) {
+        dashboardSearchFilter = filter
+        persistCredentials()
+        
+        // Post notification that dashboard filter changed
+        NotificationCenter.default.post(name: NSNotification.Name("DashboardFilterChanged"), object: nil)
+        print("📊 AuthManager: Posted DashboardFilterChanged notification for filter: '\(filter)'")
+    }
+    
     // MARK: - Validation
     
     var hasValidCredentials: Bool {
@@ -142,5 +154,16 @@ class AuthenticationManager: ObservableObject {
     
     func getActionFramework() -> JamfActionFramework {
         return actionFramework
+    }
+    
+    /// Get a fresh token, refreshing if needed
+    func getFreshToken() async -> String? {
+        guard hasValidCredentials else { return nil }
+        
+        return await actionFramework.getTokenWithRefresh(
+            jssURL: jssURL,
+            clientID: clientID,
+            secret: clientSecret
+        )
     }
 }

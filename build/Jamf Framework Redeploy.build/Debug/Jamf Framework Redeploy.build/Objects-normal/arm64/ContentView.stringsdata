@@ -1,0 +1,144 @@
+{
+  "source": "/Users/matgriffin/Documents/GitHub/Jamf-Framework-Redeploy-Management/Jamf Framework Redeploy/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Open help documentation",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Jamf Device Manager",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "Multi-function Jamf Pro Tool",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Jamf",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "Light/Dark",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "Light/Dark",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "Help",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Successfully authenticated with Jamf Pro",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 240
+        }
+      },
+      {
+        "comment": "",
+        "key": "Authentication required - Click Settings to configure API credentials",
+        "location": {
+          "startingColumn": 98,
+          "startingLine": 240
+        }
+      },
+      {
+        "comment": "",
+        "key": "Click to view app information",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 256
+        }
+      },
+      {
+        "comment": "",
+        "key": "Authenticated",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 236
+        }
+      },
+      {
+        "comment": "",
+        "key": "Not Authenticated",
+        "location": {
+          "startingColumn": 74,
+          "startingLine": 236
+        }
+      },
+      {
+        "comment": "",
+        "key": "v%@",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 250
+        }
+      },
+      {
+        "comment": "",
+        "key": "Device Information",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 357
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 394
+        }
+      },
+      {
+        "comment": "",
+        "key": "Planned Features",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 462
+        }
+      }
+    ]
+  },
+  "version": 1
+}

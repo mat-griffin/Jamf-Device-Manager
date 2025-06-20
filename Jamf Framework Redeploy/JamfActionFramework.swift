@@ -28,6 +28,22 @@ class JamfActionFramework {
         return true
     }
     
+    /// Alternative Bearer token authentication for Advanced Search compatibility
+    func authenticateWithBearerToken(jssURL: String, username: String, password: String) async -> Bool {
+        let (bearerToken, statusCode) = await api.getBearerToken(jssURL: jssURL, username: username, password: password)
+        
+        guard let token = bearerToken, let statusCode = statusCode, statusCode == 200 else {
+            Logger.loggerapi.error("Bearer token authentication failed with status code: \(statusCode ?? 0, privacy: .public)")
+            return false
+        }
+        
+        self.currentToken = token
+        // Bearer tokens typically last 8 hours (28800 seconds)
+        self.tokenExpiry = Date().addingTimeInterval(28800)
+        Logger.loggerapi.info("Bearer token authentication successful, expires at: \(self.tokenExpiry!, privacy: .public)")
+        return true
+    }
+    
     private func isTokenValid() -> Bool {
         guard let tokenExpiry = tokenExpiry else { 
             Logger.loggerapi.warning("No token expiry date set")
@@ -35,12 +51,28 @@ class JamfActionFramework {
         }
         
         let now = Date()
-        let expiryWithBuffer = tokenExpiry.addingTimeInterval(-10) // Reduced buffer to 10 seconds
+        // Increased buffer to 5 minutes for better reliability
+        let expiryWithBuffer = tokenExpiry.addingTimeInterval(-300) // 5 minutes buffer
         let isValid = now < expiryWithBuffer
         
         Logger.loggerapi.info("Token validation - Now: \(now, privacy: .public), Expires: \(tokenExpiry, privacy: .public), Valid: \(isValid, privacy: .public)")
         
         return isValid
+    }
+    
+    /// Check if token needs refresh (within 10 minutes of expiry)
+    private func shouldRefreshToken() -> Bool {
+        guard let tokenExpiry = tokenExpiry else { return true }
+        
+        let now = Date()
+        let refreshThreshold = tokenExpiry.addingTimeInterval(-600) // 10 minutes before expiry
+        let shouldRefresh = now >= refreshThreshold
+        
+        if shouldRefresh {
+            Logger.loggerapi.info("Token should be refreshed - expires in less than 10 minutes")
+        }
+        
+        return shouldRefresh
     }
     
     private func getValidToken() -> String? {
@@ -63,6 +95,25 @@ class JamfActionFramework {
     
     func getCurrentToken() -> String? {
         return getValidToken()
+    }
+    
+    /// Get a valid token, refreshing if needed
+    func getTokenWithRefresh(jssURL: String, clientID: String, secret: String) async -> String? {
+        // If we have a valid token that doesn't need refresh, return it
+        if isTokenValid() && !shouldRefreshToken(), let token = currentToken {
+            return token
+        }
+        
+        // Token needs refresh or is invalid
+        Logger.loggerapi.info("Refreshing authentication token proactively")
+        let success = await authenticate(jssURL: jssURL, clientID: clientID, secret: secret)
+        
+        if success {
+            return currentToken
+        } else {
+            Logger.loggerapi.error("Failed to refresh authentication token")
+            return nil
+        }
     }
     
     // MARK: - Single Device Management State Operations

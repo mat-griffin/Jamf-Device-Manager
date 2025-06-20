@@ -9,6 +9,15 @@ A comprehensive macOS application for managing Jamf Pro devices with both indivi
 
 ## 🌟 Features
 
+### 📊 Dashboards and Stats
+- **Jamf Advanced search Dashboard**: View stats about Computers in Jamf
+- **Filtering**: Filter the Advanced searches in Settings by prefix word
+
+### 🔍 Search & Discovery
+- **Jamf Search**: Search and browse devices directly from within the application
+- **Device Information**: View comprehensive device details and user information
+- **Real-time Device Status**: Live status updates and management state information
+
 ### 🔧 Framework Management
 - **Single Device Redeploy**: Deploy Jamf framework to individual devices with real-time feedback
 - **Bulk Framework Redeploy**: Mass deploy framework to multiple devices via CSV import
@@ -24,11 +33,6 @@ A comprehensive macOS application for managing Jamf Pro devices with both indivi
 - **Detailed Error Reporting**: Specific failure reasons and comprehensive status updates
 - **Jamf Pro Integration**: Direct links to device records in Jamf Pro
 
-### 🔍 Search & Discovery
-- **Jamf Search**: Search and browse devices directly from within the application
-- **Device Information**: View comprehensive device details and user information
-- **Real-time Device Status**: Live status updates and management state information
-
 ### 🎨 Modern User Experience
 - **5-Tab Interface**: Organized workflow with Single Redeploy, Mass Redeploy, Manage & Lock, Mass Manage & Lock, and Jamf Search
 - **Built-in Help System**: Comprehensive help documentation with contextual tooltips
@@ -41,6 +45,11 @@ A comprehensive macOS application for managing Jamf Pro devices with both indivi
 The modern 5-tab interface provides clear organization of all functionality:
 
 ![Main Interface](images/main_interface.png)
+
+### Dashboard
+Stats and Charts
+
+![Dashboard](https://github.com/mat-griffin/Jamf-Device-Manager/blob/main/images/dashboard.png)
 
 ### Jamf Search
 Simple search and Advanced search:

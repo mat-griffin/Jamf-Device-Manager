@@ -67,7 +67,7 @@ struct AboutView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     
-                    Text("Enhanced with additional features.")
+                    Text("Enhanced with manyadditional features.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)

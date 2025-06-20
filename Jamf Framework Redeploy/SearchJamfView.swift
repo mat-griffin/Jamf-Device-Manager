@@ -121,7 +121,7 @@ struct SearchJamfView: View {
                                             RoundedRectangle(cornerRadius: 8)
                                                 .stroke(Color(NSColor.separatorColor), lineWidth: 1)
                                         )
-                                        .frame(maxWidth: 450)
+                                        .frame(maxWidth: .infinity)
                                         
                                         Spacer()
                                     }
@@ -327,7 +327,7 @@ struct SearchJamfView: View {
                         
                         Spacer(minLength: 0)
                     }
-                    .frame(maxWidth: geometry.size.width * 0.9)
+                    .frame(maxWidth: geometry.size.width * 0.8)
                     Spacer()
                 }
                 .padding(DesignSystem.Spacing.xl)
@@ -976,9 +976,9 @@ struct SearchResultRow: View {
             }
         }
         .background(Color.clear)
-        .cornerRadius(DesignSystem.cornerRadius)
+        .cornerRadius(DesignSystem.CornerRadius.md)
         .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         )
         .animation(.easeInOut(duration: 0.3), value: isExpanded)
@@ -1036,7 +1036,7 @@ struct ExpandedDeviceDetails: View {
         }
         .padding(DesignSystem.Spacing.md)
         .background(Color.gray.opacity(0.05))
-        .cornerRadius(DesignSystem.cornerRadius)
+        .cornerRadius(DesignSystem.CornerRadius.md)
     }
 }
 

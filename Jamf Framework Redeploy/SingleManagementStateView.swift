@@ -71,12 +71,10 @@ struct SingleManagementStateView: View {
                         // Device Info Display
                         if let deviceInfo = deviceInfo {
                             DeviceInfoCard(
+                                deviceName: deviceInfo.computerName,
                                 serialNumber: deviceInfo.serialNumber,
                                 isManaged: deviceInfo.currentState,
-                                computerID: deviceInfo.computerID,
-                                userFullName: deviceInfo.userFullName,
-                                username: deviceInfo.username,
-                                userEmail: deviceInfo.userEmail
+                                computerID: deviceInfo.computerID
                             )
                             
                             // Management State Actions
@@ -125,7 +123,7 @@ struct SingleManagementStateView: View {
                                                             helpText: "PIN will be required to unlock the Mac after it's moved to Unmanaged"
                                                         )
                                                         .frame(maxWidth: 300)
-                                                        .onChange(of: lockPin) { newValue in
+                                                        .onChange(of: lockPin) { _, newValue in
                                                             // Filter to only numbers and limit to 6 characters
                                                             let filtered = String(newValue.filter { $0.isNumber }.prefix(6))
                                                             if filtered != newValue {
@@ -145,10 +143,10 @@ struct SingleManagementStateView: View {
                                                 }
                                                 .padding(DesignSystem.Spacing.lg)
                                                 .background(
-                                                    RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+                                                    RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                                                         .fill(Color.orange.opacity(0.1))
                                                         .overlay(
-                                                            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
+                                                            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                                                                 .stroke(shouldLockDevice ? Color.orange : Color.orange.opacity(0.3), lineWidth: shouldLockDevice ? 2 : 1)
                                                         )
                                                 )

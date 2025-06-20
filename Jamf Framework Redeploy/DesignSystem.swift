@@ -1,12 +1,13 @@
 //
 //  DesignSystem.swift
-//  Jamf Device Manager
+//  Jamf Framework Redeploy
 //
+//  Unified design system for consistent UI across the application
 //
 
 import SwiftUI
 
-// MARK: - Design System
+// MARK: - Design System Constants
 struct DesignSystem {
     
     // MARK: - Spacing
@@ -15,32 +16,46 @@ struct DesignSystem {
         static let sm: CGFloat = 8
         static let md: CGFloat = 12
         static let lg: CGFloat = 16
-        static let xl: CGFloat = 24
-        static let xxl: CGFloat = 32
+        static let xl: CGFloat = 20
+        static let xxl: CGFloat = 24
+        static let xxxl: CGFloat = 32
+    }
+    
+    // MARK: - Corner Radius
+    struct CornerRadius {
+        static let sm: CGFloat = 6
+        static let md: CGFloat = 8
+        static let lg: CGFloat = 12
+        static let xl: CGFloat = 16
     }
     
     // MARK: - Colors
     struct Colors {
-        static let cardBackground = Color(NSColor.controlBackgroundColor)
-        static let border = Color(NSColor.separatorColor)
+        static let cardBackground = Color(.controlBackgroundColor)
+        static let sectionBackground = Color(.windowBackgroundColor)
+        static let border = Color.gray.opacity(0.3)
         static let success = Color.green
-        static let error = Color.red
         static let warning = Color.orange
+        static let error = Color.red
         static let info = Color.blue
     }
-    
-    // MARK: - Corner Radius
-    static let cornerRadius: CGFloat = 8
-    static let shadowRadius: CGFloat = 4
-    static let shadowOpacity: Double = 0.1
 }
 
-// MARK: - Section Header Component
+// MARK: - Reusable UI Components
+
+// MARK: - Section Header
 struct SectionHeader: View {
     let icon: String
     let title: String
     let subtitle: String
     let iconColor: Color
+    
+    init(icon: String, title: String, subtitle: String, iconColor: Color = .blue) {
+        self.icon = icon
+        self.title = title
+        self.subtitle = subtitle
+        self.iconColor = iconColor
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
@@ -51,7 +66,6 @@ struct SectionHeader: View {
                 Text(title)
                     .font(.title2)
                     .fontWeight(.semibold)
-                Spacer()
             }
             
             Text(subtitle)
@@ -60,14 +74,17 @@ struct SectionHeader: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
+        .padding(DesignSystem.Spacing.lg)
         .background(DesignSystem.Colors.cardBackground)
-        .cornerRadius(DesignSystem.cornerRadius)
-        .shadow(radius: DesignSystem.shadowRadius, y: 2)
+        .cornerRadius(DesignSystem.CornerRadius.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
+                .stroke(DesignSystem.Colors.border, lineWidth: 1)
+        )
     }
 }
 
-// MARK: - Card Container Component
+// MARK: - Card Container
 struct CardContainer<Content: View>: View {
     let content: Content
     
@@ -76,17 +93,21 @@ struct CardContainer<Content: View>: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
             content
         }
-        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(DesignSystem.Spacing.lg)
         .background(DesignSystem.Colors.cardBackground)
-        .cornerRadius(DesignSystem.cornerRadius)
-        .shadow(radius: DesignSystem.shadowRadius, y: 2)
+        .cornerRadius(DesignSystem.CornerRadius.md)
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
+                .stroke(DesignSystem.Colors.border, lineWidth: 1)
+        )
     }
 }
 
-// MARK: - Form Field Component
+// MARK: - Form Field
 struct FormField: View {
     let label: String
     let placeholder: String
@@ -107,13 +128,14 @@ struct FormField: View {
             Text(label)
                 .font(.subheadline)
                 .fontWeight(.medium)
+                .foregroundColor(.primary)
             
             if isSecure {
                 SecureField(placeholder, text: $text)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(.roundedBorder)
             } else {
                 TextField(placeholder, text: $text)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(.roundedBorder)
             }
             
             if let helpText = helpText {
@@ -125,7 +147,24 @@ struct FormField: View {
     }
 }
 
-// MARK: - Action Button Component
+// MARK: - Status Indicator
+struct StatusIndicator: View {
+    let isConnected: Bool
+    let text: String
+    
+    var body: some View {
+        HStack(spacing: DesignSystem.Spacing.sm) {
+            Circle()
+                .fill(isConnected ? DesignSystem.Colors.success : DesignSystem.Colors.error)
+                .frame(width: 8, height: 8)
+            Text(text)
+                .font(.subheadline)
+                .foregroundColor(isConnected ? DesignSystem.Colors.success : DesignSystem.Colors.error)
+        }
+    }
+}
+
+// MARK: - Action Button
 struct ActionButton: View {
     let title: String
     let icon: String?
@@ -140,6 +179,29 @@ struct ActionButton: View {
         case secondary
         case destructive
         case success
+        
+        var backgroundColor: Color {
+            switch self {
+            case .primary: return .accentColor
+            case .secondary: return Color.clear
+            case .destructive: return DesignSystem.Colors.error
+            case .success: return DesignSystem.Colors.success
+            }
+        }
+        
+        var foregroundColor: Color {
+            switch self {
+            case .primary, .destructive, .success: return .white
+            case .secondary: return .primary
+            }
+        }
+        
+        var borderColor: Color? {
+            switch self {
+            case .secondary: return DesignSystem.Colors.border
+            default: return nil
+            }
+        }
     }
     
     init(title: String, icon: String? = nil, style: ButtonStyle = .primary, isLoading: Bool = false, isDisabled: Bool = false, width: CGFloat? = nil, action: @escaping () -> Void) {
@@ -158,111 +220,55 @@ struct ActionButton: View {
                 if isLoading {
                     ProgressView()
                         .scaleEffect(0.8)
+                        .foregroundColor(style.foregroundColor)
                 } else if let icon = icon {
                     Image(systemName: icon)
                 }
                 Text(title)
             }
-            .frame(width: width != nil ? width! - (DesignSystem.Spacing.lg * 2) : nil)
+            .frame(minWidth: width ?? 120)
             .padding(.horizontal, DesignSystem.Spacing.lg)
             .padding(.vertical, DesignSystem.Spacing.md)
-            .background(backgroundColor)
-            .foregroundColor(foregroundColor)
-            .cornerRadius(DesignSystem.cornerRadius)
+            .background(style.backgroundColor)
+            .foregroundColor(style.foregroundColor)
+            .cornerRadius(DesignSystem.CornerRadius.sm)
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.sm)
+                    .stroke(style.borderColor ?? Color.clear, lineWidth: 1)
+            )
         }
-        .frame(width: width)
+        .buttonStyle(PlainButtonStyle())
         .disabled(isDisabled || isLoading)
         .opacity((isDisabled || isLoading) ? 0.6 : 1.0)
-        .buttonStyle(PlainButtonStyle())
-    }
-    
-    private var backgroundColor: Color {
-        switch style {
-        case .primary:
-            return .accentColor
-        case .secondary:
-            return Color.gray.opacity(0.2)
-        case .destructive:
-            return DesignSystem.Colors.error
-        case .success:
-            return DesignSystem.Colors.success
-        }
-    }
-    
-    private var foregroundColor: Color {
-        switch style {
-        case .primary, .destructive, .success:
-            return .white
-        case .secondary:
-            return .primary
-        }
     }
 }
 
-// MARK: - Status Indicator Component
-struct StatusIndicator: View {
-    let isConnected: Bool
-    let text: String
-    
-    var body: some View {
-        HStack(spacing: DesignSystem.Spacing.sm) {
-            Circle()
-                .fill(isConnected ? DesignSystem.Colors.success : DesignSystem.Colors.error)
-                .frame(width: 8, height: 8)
-            
-            Text(text)
-                .font(.subheadline)
-                .foregroundColor(isConnected ? DesignSystem.Colors.success : DesignSystem.Colors.error)
-        }
-    }
-}
-
-// MARK: - Device Info Card Component
+// MARK: - Device Info Card
 struct DeviceInfoCard: View {
+    let deviceName: String
     let serialNumber: String
     let isManaged: Bool
-    let computerID: Int
-    let userFullName: String?
-    let username: String?
-    let userEmail: String?
+    let computerID: Int?
     
     var body: some View {
         CardContainer {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                Label("Device Information", systemImage: "info.circle")
+                Label("Device Information", systemImage: "laptopcomputer")
                     .font(.headline)
                     .foregroundColor(.primary)
                 
-                VStack(spacing: DesignSystem.Spacing.md) {
-                    DeviceInfoRow(label: "Serial Number", value: serialNumber)
-                    DeviceInfoRow(label: "Computer ID", value: String(computerID))
-                    
-                    // User Information Section
-                    if userFullName != nil || username != nil || userEmail != nil {
-                        Divider()
-                        
-                        if let fullName = userFullName, !fullName.isEmpty {
-                            DeviceInfoRow(label: "Full Name", value: fullName)
-                        }
-                        
-                        if let user = username, !user.isEmpty {
-                            DeviceInfoRow(label: "Username", value: user)
-                        }
-                        
-                        if let email = userEmail, !email.isEmpty {
-                            DeviceInfoRow(label: "Email", value: email)
-                        }
+                VStack(spacing: DesignSystem.Spacing.sm) {
+                    InfoRow(label: "Computer Name", value: deviceName)
+                    InfoRow(label: "Serial Number", value: serialNumber)
+                    if let computerID = computerID {
+                        InfoRow(label: "Computer ID", value: String(computerID))
                     }
-                    
-                    Divider()
                     
                     HStack {
                         Text("Management State:")
                             .font(.subheadline)
-                            .fontWeight(.medium)
-                        
+                            .foregroundColor(.secondary)
                         Spacer()
-                        
                         StatusIndicator(
                             isConnected: isManaged,
                             text: isManaged ? "Managed" : "Unmanaged"
@@ -271,38 +277,26 @@ struct DeviceInfoCard: View {
                 }
             }
         }
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
-                .stroke(Color.blue.opacity(0.3), lineWidth: 1)
-        )
     }
 }
 
-// MARK: - Device Info Row Component
-struct DeviceInfoRow: View {
-    let label: String
-    let value: String
-    
-    var body: some View {
-        HStack {
-            Text("\(label):")
-                .font(.subheadline)
-                .fontWeight(.medium)
-            
-            Spacer()
-            
-            Text(value)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-    }
-}
+// NOTE: InfoRow is defined in SearchJamfView.swift to avoid duplication
 
-// MARK: - Empty State View Component
+// MARK: - Empty State View
 struct EmptyStateView: View {
     let icon: String
     let title: String
     let subtitle: String
+    let actionTitle: String?
+    let action: (() -> Void)?
+    
+    init(icon: String, title: String, subtitle: String, actionTitle: String? = nil, action: (() -> Void)? = nil) {
+        self.icon = icon
+        self.title = title
+        self.subtitle = subtitle
+        self.actionTitle = actionTitle
+        self.action = action
+    }
     
     var body: some View {
         VStack(spacing: DesignSystem.Spacing.lg) {
@@ -310,151 +304,23 @@ struct EmptyStateView: View {
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
             
-            Text(title)
-                .font(.title2)
-                .fontWeight(.semibold)
+            VStack(spacing: DesignSystem.Spacing.sm) {
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 400)
+            }
             
-            Text(subtitle)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: 400)
+            if let actionTitle = actionTitle, let action = action {
+                ActionButton(title: actionTitle, style: .primary, action: action)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
+        .padding(DesignSystem.Spacing.xl)
     }
-}
-
-// MARK: - MacOS-Style Button Components
-struct MacOSPrimaryButton: View {
-    let title: String
-    let icon: String?
-    let isLoading: Bool
-    let isDisabled: Bool
-    let action: () -> Void
-    
-    init(title: String, icon: String? = nil, isLoading: Bool = false, isDisabled: Bool = false, action: @escaping () -> Void) {
-        self.title = title
-        self.icon = icon
-        self.isLoading = isLoading
-        self.isDisabled = isDisabled
-        self.action = action
-    }
-    
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: DesignSystem.Spacing.sm) {
-                if isLoading {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                        .foregroundColor(.white)
-                } else if let icon = icon {
-                    Image(systemName: icon)
-                }
-                Text(title)
-            }
-            .frame(minWidth: 120)
-            .padding(.horizontal, DesignSystem.Spacing.lg)
-            .padding(.vertical, DesignSystem.Spacing.md)
-            .background(.blue)
-            .foregroundColor(.white)
-            .cornerRadius(DesignSystem.cornerRadius)
-        }
-        .disabled(isDisabled || isLoading)
-        .opacity((isDisabled || isLoading) ? 0.6 : 1.0)
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct MacOSSecondaryButton: View {
-    let title: String
-    let icon: String?
-    let isLoading: Bool
-    let isDisabled: Bool
-    let action: () -> Void
-    
-    init(title: String, icon: String? = nil, isLoading: Bool = false, isDisabled: Bool = false, action: @escaping () -> Void) {
-        self.title = title
-        self.icon = icon
-        self.isLoading = isLoading
-        self.isDisabled = isDisabled
-        self.action = action
-    }
-    
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: DesignSystem.Spacing.sm) {
-                if isLoading {
-                    ProgressView()
-                        .scaleEffect(0.8)
-                } else if let icon = icon {
-                    Image(systemName: icon)
-                }
-                Text(title)
-            }
-            .frame(minWidth: 120)
-            .padding(.horizontal, DesignSystem.Spacing.lg)
-            .padding(.vertical, DesignSystem.Spacing.md)
-            .background(Color.gray.opacity(0.2))
-            .foregroundColor(.primary)
-            .cornerRadius(DesignSystem.cornerRadius)
-        }
-        .disabled(isDisabled || isLoading)
-        .opacity((isDisabled || isLoading) ? 0.6 : 1.0)
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-// MARK: - MacOS Card Component
-struct MacOSCard<Content: View>: View {
-    let content: Content
-    
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-    
-    var body: some View {
-        VStack {
-            content
-        }
-        .padding(DesignSystem.Spacing.lg)
-        .background(DesignSystem.Colors.cardBackground)
-        .cornerRadius(DesignSystem.cornerRadius)
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.cornerRadius)
-                .stroke(DesignSystem.Colors.border, lineWidth: 0.5)
-        )
-    }
-}
-
-// MARK: - MacOS Toolbar Component
-struct MacOSToolbar: View {
-    @Binding var selectedTab: Int
-    let tabItems: [(title: String, icon: String)]
-    
-    var body: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(tabItems.enumerated()), id: \.offset) { index, item in
-                Button(action: {
-                    selectedTab = index
-                }) {
-                    HStack(spacing: DesignSystem.Spacing.sm) {
-                        Image(systemName: item.icon)
-                            .font(.system(size: 13))
-                        Text(item.title)
-                            .font(.system(size: 13))
-                    }
-                    .padding(.horizontal, DesignSystem.Spacing.md)
-                    .padding(.vertical, DesignSystem.Spacing.sm)
-                    .background(selectedTab == index ? Color.accentColor.opacity(0.15) : Color.clear)
-                    .foregroundColor(selectedTab == index ? .accentColor : .secondary)
-                    .cornerRadius(6)
-                }
-                .buttonStyle(PlainButtonStyle())
-                
-                if index < tabItems.count - 1 {
-                    Spacer().frame(width: DesignSystem.Spacing.sm)
-                }
-            }
-        }
-    }
-}
+} 
