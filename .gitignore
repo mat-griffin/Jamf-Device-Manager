@@ -1,7 +1,6 @@
-
 .DS_Store
 workflow_state.md
 CLAUDE.md
-/docs
-/archive
-/build
+/docs/
+/archive/
+/build/
