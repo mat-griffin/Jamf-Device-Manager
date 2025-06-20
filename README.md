@@ -262,7 +262,11 @@ See the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed enterprise dep
 
 ## 🔄 Version History
 
-### v2.1.0 (Current) - Jamf Search Integration
+### v2.2.0 (Current) - Dashboard
+- **New**: Dashboards using Jamf Computer Advanced Search Groups
+- **New**: Prefix word filtering setting
+
+### v2.1.0 - Jamf Search Integration
 - **New**: Jamf Search tab for browsing and searching devices
 - **New**: Real-time device search with comprehensive filtering
 - **New**: Direct device information access within the application
