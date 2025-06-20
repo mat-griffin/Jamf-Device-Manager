@@ -5,7 +5,7 @@ by red5coder.
 
 Github: https://github.com/red5coder/Jamf-Framework-Redeploy
 
-A comprehensive macOS application for managing Jamf Pro devices with both individual and bulk operations. Streamline framework redeploys, management state changes, and device locking operations through an intuitive interface.
+A comprehensive macOS application for managing Jamf Pro Computers with both individual and bulk operations. Streamline framework redeploys, management state changes, and device locking operations through an intuitive interface.
 
 ## 🌟 Features
 
@@ -301,7 +301,7 @@ See [Changelog](docs/CHANGELOG.md) for complete version history.
 
 ### Development Setup
 1. Clone the repository
-2. Open in Xcode 14.0 or later
+2. Open in Xcode 16.0 or later
 3. Build and run the project
 
 ### Requirements
@@ -317,23 +317,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Original Jamf Framework Redeploy utility by Richard Mallion
 - Jamf Pro API documentation and support team
-- macOS developer community for SwiftUI resources
-
-## 📞 Support
-
-### Getting Help
-1. Check the [built-in help system](#-documentation)
-2. Review the [troubleshooting guide](docs/TROUBLESHOOTING.md)
-3. Search existing [GitHub issues](../../issues)
-4. Create a new issue with detailed information
-
-### Information to Include in Bug Reports
-- Application version
-- macOS version  
-- Jamf Pro version
-- Steps to reproduce
-- Error messages and screenshots
-- Sample CSV file (with sensitive data removed)
 
 ---
 
