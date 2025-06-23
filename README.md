@@ -262,7 +262,10 @@ See the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed enterprise dep
 
 ## 🔄 Version History
 
-### v2.2.0 (Current) - Dashboard
+### v2.2.1 (Current)
+Bug fix
+
+### v2.2.0 - Dashboard
 - **New**: Dashboards using Jamf Computer Advanced Search Groups
 - **New**: Prefix word filtering setting
 
