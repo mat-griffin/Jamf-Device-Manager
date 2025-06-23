@@ -8,7 +8,7 @@ import SwiftUI
 struct MassManageView: View {
     @ObservedObject var csvHandler: CSVHandler
     @EnvironmentObject var authManager: AuthenticationManager
-    @State private var selectedState: ManagementTargetState = .managed
+    @State private var selectedState: ManagementTargetState = .unmanaged
     @State private var shouldLockDevice = false
     @State private var showingFilePicker = false
     @State private var showingAlert = false
@@ -19,8 +19,8 @@ struct MassManageView: View {
     @State private var processedCount = 0
     
     enum ManagementTargetState: String, CaseIterable {
-        case managed = "Managed"
-        case unmanaged = "Unmanaged"
+        case managed = "Manage"
+        case unmanaged = "Unmanage"
         
         var iconName: String {
             switch self {
@@ -62,6 +62,11 @@ struct MassManageView: View {
             
             if !csvHandler.computers.isEmpty {
                 managementControlsSection
+                
+                if isProcessing {
+                    progressSection
+                }
+                
                 computerListSection
             } else {
                 dropZoneSection
@@ -167,7 +172,7 @@ struct MassManageView: View {
                     }
                     
                     if selectedState == .unmanaged {
-                        Toggle("Lock devices with random PINs", isOn: $shouldLockDevice)
+                        Toggle("Lock devices with random PIN", isOn: $shouldLockDevice)
                             .toggleStyle(SwitchToggleStyle())
                     }
                 }
@@ -180,7 +185,7 @@ struct MassManageView: View {
                         isLoading: isProcessing,
                         isDisabled: isProcessing || !authManager.hasValidCredentials,
                         action: {
-                            if shouldLockDevice {
+                            if selectedState == .unmanaged && shouldLockDevice {
                                 showingLockConfirmation = true
                             } else {
                                 Task {
@@ -201,6 +206,36 @@ struct MassManageView: View {
                             csvHandler.clearComputers()
                         }
                     )
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var progressSection: some View {
+        CardContainer {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+                Label("Progress", systemImage: "chart.line.uptrend.xyaxis")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                    HStack {
+                        Text("Progress: \(processedCount) / \(csvHandler.computers.count)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        let progressPercentage = csvHandler.computers.isEmpty ? 0 : Int((Double(processedCount) / Double(csvHandler.computers.count)) * 100)
+                        Text("\(progressPercentage)%")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    ProgressView(value: csvHandler.computers.isEmpty ? 0 : Double(processedCount), total: Double(csvHandler.computers.count))
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .accentColor(.blue)
                 }
             }
         }
@@ -270,9 +305,23 @@ struct MassManageView: View {
     private func computerRow(computer: ComputerRecord) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(computer.serialNumber)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                if let jamfComputerID = computer.jamfComputerID {
+                    Button(action: {
+                        openJamfComputerRecord(computerID: jamfComputerID)
+                    }) {
+                        Text(computer.serialNumber)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.blue)
+                            .underline()
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .help("Click to open computer record in Jamf Pro")
+                } else {
+                    Text(computer.serialNumber)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                }
                 
                 if let computerName = computer.computerName {
                     Text(computerName)
@@ -369,16 +418,166 @@ struct MassManageView: View {
     
     private func startMassManagement() async {
         isProcessing = true
+        csvHandler.isProcessing = true
         processedCount = 0
         
-        // Simulate processing
-        for (index, _) in csvHandler.computers.enumerated() {
-            try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 second delay
-            processedCount = index + 1
+        // Update all devices to in progress status
+        for computer in csvHandler.computers {
+            csvHandler.updateComputerStatus(computer.id, status: .inProgress, error: nil)
         }
         
+        let actionFramework = authManager.getActionFramework()
+        let jamfAPI = JamfProAPI()
+        var successCount = 0
+        var errorCount = 0
+        var lockErrors: [String] = []
+        var lockPins: [String: String] = [:] // serialNumber -> PIN mapping
+        
+        // Ensure we have a fresh token before starting bulk operations
+        if actionFramework.getCurrentToken() == nil {
+            let authSuccess = await authManager.authenticate()
+            if !authSuccess {
+                showAlert(message: "Failed to authenticate. Please check your credentials.")
+                csvHandler.isProcessing = false
+                isProcessing = false
+                return
+            }
+        }
+        
+        // Process each device individually to handle locking
+        for (index, computer) in csvHandler.computers.enumerated() {
+            let serialNumber = computer.serialNumber
+            var operationSuccess = true
+            var errorMessage: String? = nil
+            var computerID: Int? = nil
+            
+            // If moving to unmanaged and locking is enabled, lock the device FIRST (while managed)
+            if selectedState == .unmanaged && shouldLockDevice {
+                // Generate a random 6-digit PIN
+                let lockPin = String(format: "%06d", Int.random(in: 100000...999999))
+                
+                // Get current device info for computer ID
+                let currentStateResult = await actionFramework.getDeviceManagementState(
+                    jssURL: authManager.jssURL,
+                    serialNumber: serialNumber
+                )
+                
+                if currentStateResult.success {
+                    computerID = currentStateResult.computerID
+                    
+                    // Ensure we have a fresh token for the lock command
+                    var token = actionFramework.getCurrentToken()
+                    if token == nil {
+                        // Token expired, refresh it
+                        let authSuccess = await authManager.authenticate()
+                        if authSuccess {
+                            token = actionFramework.getCurrentToken()
+                        }
+                    }
+                    
+                    // Send lock command while device is still managed
+                    if let validToken = token {
+                        let lockResult = await jamfAPI.lockComputer(
+                            jssURL: authManager.jssURL,
+                            authToken: validToken,
+                            computerID: currentStateResult.computerID,
+                            pin: lockPin
+                        )
+                        
+                        if lockResult == nil || lockResult != 201 {
+                            operationSuccess = false
+                            errorMessage = "Failed to lock device (Status: \(lockResult ?? 0))"
+                            lockErrors.append("\(serialNumber): Lock failed")
+                        } else {
+                            // Store successful lock PIN for user reference
+                            lockPins[serialNumber] = lockPin
+                        }
+                    } else {
+                        operationSuccess = false
+                        errorMessage = "Authentication token unavailable for locking"
+                    }
+                } else {
+                    operationSuccess = false
+                    errorMessage = "Failed to get device information for locking"
+                }
+            }
+            
+            // Only proceed with management state change if lock succeeded (or lock not requested)
+            if operationSuccess {
+                let result = await actionFramework.changeDeviceManagementState(
+                    jssURL: authManager.jssURL,
+                    serialNumber: serialNumber,
+                    newState: selectedState.isManaged
+                )
+                
+                if result.success {
+                    computerID = result.computerID
+                    successCount += 1
+                    csvHandler.updateComputerStatus(computer.id, status: .completed, error: nil, jamfComputerID: computerID)
+                } else {
+                    errorCount += 1
+                    csvHandler.updateComputerStatus(computer.id, status: .failed, error: result.error ?? "Management state change failed")
+                }
+            } else {
+                errorCount += 1
+                csvHandler.updateComputerStatus(computer.id, status: .failed, error: errorMessage ?? "Operation failed")
+            }
+            
+            // Update progress
+            processedCount = index + 1
+            
+            // Refresh token periodically during long operations (every 10 devices)
+            if index > 0 && (index + 1) % 10 == 0 {
+                if actionFramework.getCurrentToken() == nil {
+                    let authSuccess = await authManager.authenticate()
+                    if !authSuccess {
+                        // If we can't refresh the token, mark remaining devices as failed
+                        for remainingIndex in (index + 1)..<csvHandler.computers.count {
+                            let remainingComputer = csvHandler.computers[remainingIndex]
+                            csvHandler.updateComputerStatus(remainingComputer.id, status: .failed, error: "Authentication token expired and refresh failed")
+                            errorCount += 1
+                        }
+                        break
+                    }
+                }
+            }
+            
+            // Small delay to avoid overwhelming the API
+            try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        }
+        
+        // Show appropriate alert based on results
+        var message = ""
+        if errorCount == 0 {
+            message = "Mass management operation completed successfully (\(successCount) devices)"
+            if selectedState == .unmanaged && shouldLockDevice && !lockPins.isEmpty {
+                message += "\n\nAll devices have been locked with random PINs before unmanaging."
+            }
+        } else if successCount == 0 {
+            message = "Mass management operation failed (\(errorCount) errors)"
+        } else {
+            message = "Mass management operation completed with \(successCount) successes and \(errorCount) errors"
+            if selectedState == .unmanaged && shouldLockDevice {
+                if !lockPins.isEmpty {
+                    message += "\n\n\(lockPins.count) devices were successfully locked before unmanaging."
+                }
+                if !lockErrors.isEmpty {
+                    message += "\n\nDevices that failed to lock: \(lockErrors.joined(separator: ", "))"
+                }
+            }
+        }
+        
+        showAlert(message: message)
+        
+        csvHandler.isProcessing = false
         isProcessing = false
-        showAlert(message: "Mass management operation completed successfully")
+    }
+    
+    private func openJamfComputerRecord(computerID: Int) {
+        let jamfURL = authManager.jssURL
+        if let url = URL(string: "\(jamfURL)/computers.html?id=\(computerID)&o=r") {
+            NSWorkspace.shared.open(url)
+        }
     }
     
     private func showAlert(message: String) {

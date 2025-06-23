@@ -49,11 +49,12 @@ struct BulkRedeployView: View {
             
             if !csvHandler.computers.isEmpty {
                 controlSection
-                computerListSection
                 
                 if csvHandler.isProcessing {
                     progressSection
                 }
+                
+                computerListSection
             } else {
                 dropZoneSection
             }
@@ -176,9 +177,24 @@ struct BulkRedeployView: View {
                     .font(.headline)
                     .foregroundColor(.primary)
                 
-                // Progress would be displayed here
-                Text("Progress tracking implementation would go here")
-                    .foregroundColor(.secondary)
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                    HStack {
+                        Text("Progress: \(csvHandler.processedCount) / \(csvHandler.computers.count)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        let progressPercentage = csvHandler.computers.isEmpty ? 0 : Int((Double(csvHandler.processedCount) / Double(csvHandler.computers.count)) * 100)
+                        Text("\(progressPercentage)%")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    ProgressView(value: csvHandler.computers.isEmpty ? 0 : Double(csvHandler.processedCount), total: Double(csvHandler.computers.count))
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .accentColor(.blue)
+                }
             }
         }
     }
@@ -227,9 +243,23 @@ struct BulkRedeployView: View {
     private func computerRow(computer: ComputerRecord) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(computer.serialNumber)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                if let jamfComputerID = computer.jamfComputerID {
+                    Button(action: {
+                        openJamfComputerRecord(computerID: jamfComputerID)
+                    }) {
+                        Text(computer.serialNumber)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.blue)
+                            .underline()
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .help("Click to open computer record in Jamf Pro")
+                } else {
+                    Text(computer.serialNumber)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                }
                 
                 if let computerName = computer.computerName {
                     Text(computerName)
@@ -326,12 +356,106 @@ struct BulkRedeployView: View {
     
     private func startBulkRedeploy() async {
         isProcessing = true
+        csvHandler.isProcessing = true
         
-        // Implementation would go here
-        try? await Task.sleep(nanoseconds: 1_000_000_000) // Simulate processing
+        // Update all devices to in progress status
+        for computer in csvHandler.computers {
+            csvHandler.updateComputerStatus(computer.id, status: .inProgress, error: nil)
+        }
         
+        let actionFramework = authManager.getActionFramework()
+        var successCount = 0
+        var errorCount = 0
+        
+        // Ensure we have a fresh token before starting bulk operations
+        if actionFramework.getCurrentToken() == nil {
+            let authSuccess = await authManager.authenticate()
+            if !authSuccess {
+                showAlert(title: "Authentication Error", message: "Failed to authenticate. Please check your credentials.")
+                csvHandler.isProcessing = false
+                isProcessing = false
+                return
+            }
+        }
+        
+        // Process each device individually to capture computer IDs
+        for (index, computer) in csvHandler.computers.enumerated() {
+            let serialNumber = computer.serialNumber
+            
+            let result = await actionFramework.redeployFramework(
+                jssURL: authManager.jssURL,
+                serialNumber: serialNumber
+            )
+            
+            switch result {
+            case .success(let message):
+                // Get the computer ID for this device to enable links
+                let deviceStateResult = await actionFramework.getDeviceManagementState(
+                    jssURL: authManager.jssURL,
+                    serialNumber: serialNumber
+                )
+                
+                let computerID = deviceStateResult.success ? deviceStateResult.computerID : nil
+                csvHandler.updateComputerStatus(computer.id, status: .completed, error: nil, jamfComputerID: computerID)
+                successCount += 1
+                
+            case .failure(let error):
+                csvHandler.updateComputerStatus(computer.id, status: .failed, error: error)
+                errorCount += 1
+            
+            case .partialSuccess(let message, let details):
+                // Treat partial success as success for individual devices
+                let deviceStateResult = await actionFramework.getDeviceManagementState(
+                    jssURL: authManager.jssURL,
+                    serialNumber: serialNumber
+                )
+                
+                let computerID = deviceStateResult.success ? deviceStateResult.computerID : nil
+                csvHandler.updateComputerStatus(computer.id, status: .completed, error: nil, jamfComputerID: computerID)
+                successCount += 1
+            }
+            
+            // Update progress
+            csvHandler.processedCount = index + 1
+            
+            // Refresh token periodically during long operations (every 10 devices)
+            if index > 0 && (index + 1) % 10 == 0 {
+                if actionFramework.getCurrentToken() == nil {
+                    let authSuccess = await authManager.authenticate()
+                    if !authSuccess {
+                        // If we can't refresh the token, mark remaining devices as failed
+                        for remainingIndex in (index + 1)..<csvHandler.computers.count {
+                            let remainingComputer = csvHandler.computers[remainingIndex]
+                            csvHandler.updateComputerStatus(remainingComputer.id, status: .failed, error: "Authentication token expired and refresh failed")
+                            errorCount += 1
+                        }
+                        break
+                    }
+                }
+            }
+            
+            // Small delay to avoid overwhelming the API
+            try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        }
+        
+        // Show appropriate completion message
+        if errorCount == 0 {
+            showAlert(title: "Success", message: "Mass framework redeploy completed successfully (\(successCount) devices)")
+        } else if successCount == 0 {
+            showAlert(title: "Error", message: "Mass framework redeploy failed (\(errorCount) errors)")
+        } else {
+            showAlert(title: "Partial Success", message: "Mass framework redeploy completed with \(successCount) successes and \(errorCount) errors")
+        }
+        
+        csvHandler.isProcessing = false
         isProcessing = false
-        showAlert(title: "Complete", message: "Mass redeploy operation completed")
+    }
+    
+    private func openJamfComputerRecord(computerID: Int) {
+        let jamfURL = authManager.jssURL
+        if let url = URL(string: "\(jamfURL)/computers.html?id=\(computerID)&o=r") {
+            NSWorkspace.shared.open(url)
+        }
     }
     
     private func showAlert(title: String, message: String) {

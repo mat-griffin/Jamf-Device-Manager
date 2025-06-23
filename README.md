@@ -262,6 +262,9 @@ See the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed enterprise dep
 
 ## 🔄 Version History
 
+### v2.2.3 (Current)
+Bug fix
+
 ### v2.2.2 (Current)
 Bug fix
 
