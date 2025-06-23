@@ -51,25 +51,30 @@ class JamfActionFramework {
         }
         
         let now = Date()
-        // Increased buffer to 5 minutes for better reliability
-        let expiryWithBuffer = tokenExpiry.addingTimeInterval(-300) // 5 minutes buffer
+        // Dynamic buffer based on token lifetime - use 10 seconds or 20% of token lifetime, whichever is smaller
+        let tokenLifetime = tokenExpiry.timeIntervalSince(Date())
+        let dynamicBuffer = min(10.0, abs(tokenLifetime) * 0.2) // 10 seconds max, or 20% of lifetime
+        let expiryWithBuffer = tokenExpiry.addingTimeInterval(-dynamicBuffer)
         let isValid = now < expiryWithBuffer
         
-        Logger.loggerapi.info("Token validation - Now: \(now, privacy: .public), Expires: \(tokenExpiry, privacy: .public), Valid: \(isValid, privacy: .public)")
+        Logger.loggerapi.info("Token validation - Now: \(now, privacy: .public), Expires: \(tokenExpiry, privacy: .public), Buffer: \(dynamicBuffer, privacy: .public)s, Valid: \(isValid, privacy: .public)")
         
         return isValid
     }
     
-    /// Check if token needs refresh (within 10 minutes of expiry)
+    /// Check if token needs refresh (dynamically based on token lifetime)
     private func shouldRefreshToken() -> Bool {
         guard let tokenExpiry = tokenExpiry else { return true }
         
         let now = Date()
-        let refreshThreshold = tokenExpiry.addingTimeInterval(-600) // 10 minutes before expiry
+        // Dynamic refresh threshold - refresh when 50% of token lifetime remains, max 30 seconds
+        let tokenLifetime = abs(tokenExpiry.timeIntervalSince(now))
+        let refreshBuffer = min(30.0, tokenLifetime * 0.5) // 30 seconds max, or 50% of lifetime
+        let refreshThreshold = tokenExpiry.addingTimeInterval(-refreshBuffer)
         let shouldRefresh = now >= refreshThreshold
         
         if shouldRefresh {
-            Logger.loggerapi.info("Token should be refreshed - expires in less than 10 minutes")
+            Logger.loggerapi.info("Token should be refreshed - expires in less than \(refreshBuffer, privacy: .public) seconds")
         }
         
         return shouldRefresh
