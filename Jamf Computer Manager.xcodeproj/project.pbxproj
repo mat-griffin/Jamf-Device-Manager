@@ -47,7 +47,7 @@
 		FB9EA044Z2C8F7DEF00E990H8 /* SearchJamfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchJamfView.swift; sourceTree = "<group>"; };
 		FB9EA046Z2C8F7DEF00E990I1 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		FB9EA048Z2C8F7DEF00E990I3 /* DashboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardManager.swift; sourceTree = "<group>"; };
-		FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jamf Framework Redeploy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBFE2ECD296C6A7000351FF3 /* Jamf Device Manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Jamf Device Manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBFE2ED0296C6A7000351FF3 /* Jamf_Framework_RedeployApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Jamf_Framework_RedeployApp.swift; sourceTree = "<group>"; };
 		FBFE2ED2296C6A7000351FF3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		FBFE2ED4296C6A7100351FF3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 		FBFE2ECE296C6A7000351FF3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */,
+				FBFE2ECD296C6A7000351FF3 /* Jamf Device Manager.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -125,9 +125,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FBFE2ECC296C6A7000351FF3 /* Jamf Framework Redeploy */ = {
+		FBFE2ECC296C6A7000351FF3 /* Jamf Device Manager */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FBFE2EDC296C6A7100351FF3 /* Build configuration list for PBXNativeTarget "Jamf Framework Redeploy" */;
+			buildConfigurationList = FBFE2EDC296C6A7100351FF3 /* Build configuration list for PBXNativeTarget "Jamf Device Manager" */;
 			buildPhases = (
 				FBFE2EC9296C6A7000351FF3 /* Sources */,
 				FBFE2ECA296C6A7000351FF3 /* Frameworks */,
@@ -137,9 +137,9 @@
 			);
 			dependencies = (
 			);
-			name = "Jamf Framework Redeploy";
+			name = "Jamf Device Manager";
 			productName = "Jamf Framework Redeploy";
-			productReference = FBFE2ECD296C6A7000351FF3 /* Jamf Framework Redeploy.app */;
+			productReference = FBFE2ECD296C6A7000351FF3 /* Jamf Device Manager.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -170,7 +170,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FBFE2ECC296C6A7000351FF3 /* Jamf Framework Redeploy */,
+				FBFE2ECC296C6A7000351FF3 /* Jamf Device Manager */,
 			);
 		};
 /* End PBXProject section */
@@ -345,7 +345,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Jamf Framework Redeploy/Jamf_Framework_Redeploy.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Jamf Framework Redeploy/Preview Content\"";
 				DEVELOPMENT_TEAM = 8MW79Q3XKA;
@@ -359,7 +359,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 2.2.1;
+				MARKETING_VERSION = 2.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
@@ -380,7 +380,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Jamf Framework Redeploy/Jamf_Framework_Redeploy.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Jamf Framework Redeploy/Preview Content\"";
 				DEVELOPMENT_TEAM = 8MW79Q3XKA;
@@ -394,7 +394,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 2.2.1;
+				MARKETING_VERSION = 2.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.uk.mallion.Jamf-Framework-Redeploy";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = macosx;
@@ -416,7 +416,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FBFE2EDC296C6A7100351FF3 /* Build configuration list for PBXNativeTarget "Jamf Framework Redeploy" */ = {
+		FBFE2EDC296C6A7100351FF3 /* Build configuration list for PBXNativeTarget "Jamf Device Manager" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FBFE2EDD296C6A7100351FF3 /* Debug */,

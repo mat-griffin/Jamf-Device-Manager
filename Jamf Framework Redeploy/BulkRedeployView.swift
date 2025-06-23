@@ -49,6 +49,7 @@ struct BulkRedeployView: View {
             
             if !csvHandler.computers.isEmpty {
                 controlSection
+                computerListSection
                 
                 if csvHandler.isProcessing {
                     progressSection
@@ -148,6 +149,26 @@ struct BulkRedeployView: View {
     }
     
     @ViewBuilder
+    private var computerListSection: some View {
+        CardContainer {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                Label("Computer List", systemImage: "list.bullet")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                ScrollView {
+                    LazyVStack(spacing: DesignSystem.Spacing.xs) {
+                        ForEach(csvHandler.computers) { computer in
+                            computerRow(computer: computer)
+                        }
+                    }
+                }
+                .frame(maxHeight: 300)
+            }
+        }
+    }
+    
+    @ViewBuilder
     private var progressSection: some View {
         CardContainer {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
@@ -202,7 +223,70 @@ struct BulkRedeployView: View {
         }
     }
     
+    @ViewBuilder
+    private func computerRow(computer: ComputerRecord) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(computer.serialNumber)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                
+                if let computerName = computer.computerName {
+                    Text(computerName)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(statusText(for: computer.status))
+                    .font(.caption)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(statusColor(for: computer.status))
+                    .foregroundColor(.white)
+                    .cornerRadius(4)
+                
+                if let error = computer.errorMessage {
+                    Text(error)
+                        .font(.caption2)
+                        .foregroundColor(.red)
+                        .lineLimit(1)
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(Color(NSColor.textBackgroundColor))
+        .cornerRadius(6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(computer.status == .inProgress ? Color.blue.opacity(0.3) : Color.clear, lineWidth: 1)
+                .animation(.easeInOut(duration: 0.3), value: computer.status)
+        )
+    }
+    
     // MARK: - Helper Methods
+    
+    private func statusText(for status: ComputerRecord.DeploymentStatus) -> String {
+        switch status {
+        case .pending: return "Pending"
+        case .inProgress: return "In Progress"
+        case .completed: return "Completed"
+        case .failed: return "Failed"
+        }
+    }
+    
+    private func statusColor(for status: ComputerRecord.DeploymentStatus) -> Color {
+        switch status {
+        case .pending: return .gray
+        case .inProgress: return .blue
+        case .completed: return .green
+        case .failed: return .red
+        }
+    }
     
     private func handleFileSelection(_ result: Result<[URL], Error>) {
         switch result {
