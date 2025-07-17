@@ -9,10 +9,16 @@ import SwiftUI
 import Charts
 
 struct DashboardView: View {
-    @StateObject var dashboardManager = DashboardManager()
+    @ObservedObject var dashboardManager: DashboardManager
     @EnvironmentObject var authManager: AuthenticationManager
     @State private var selectedOSVersion: String? = nil
     @State private var selectedDeviceModel: String? = nil
+    
+    // Navigation callback for model search
+    var onModelSearch: ((String, [ComputerDashboardInfo], String) -> Void)?
+    
+    // Navigation callback for OS version search
+    var onOSVersionSearch: ((String, [ComputerDashboardInfo], String) -> Void)?
     
     var body: some View {
         GeometryReader { geometry in
@@ -377,6 +383,51 @@ struct DashboardView: View {
         .modifier(ChartSelectionModifier(selectedOSVersion: $selectedOSVersion, osVersionData: dashboardManager.osVersionData))
         .chartOverlay { chartProxy in
             GeometryReader { geometry in
+                // Clickable and hoverable overlay for OS version search
+                Rectangle()
+                    .fill(Color.clear)
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onEnded { value in
+                                let location = value.location
+                                // Find which OS version was clicked based on tap location
+                                for osData in dashboardManager.osVersionData {
+                                    if let xPosition = chartProxy.position(forX: osData.version) {
+                                        let barWidth = geometry.size.width / CGFloat(dashboardManager.osVersionData.count)
+                                        let tapX = location.x
+                                        
+                                        // Check if tap is within this bar's bounds
+                                        if abs(tapX - xPosition) < barWidth / 2 {
+                                            // Trigger search immediately on click
+                                            onOSVersionSearch?(osData.version, dashboardManager.cachedDashboardData, dashboardManager.currentSearchName)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                    )
+                    .onContinuousHover { phase in
+                        switch phase {
+                        case .active(let location):
+                            // Find which OS version is being hovered
+                            for osData in dashboardManager.osVersionData {
+                                if let xPosition = chartProxy.position(forX: osData.version) {
+                                    let barWidth = geometry.size.width / CGFloat(dashboardManager.osVersionData.count)
+                                    let hoverX = location.x
+                                    
+                                    // Check if hover is within this bar's bounds
+                                    if abs(hoverX - xPosition) < barWidth / 2 {
+                                        selectedOSVersion = osData.version
+                                        break
+                                    }
+                                }
+                            }
+                        case .ended:
+                            selectedOSVersion = nil
+                        }
+                    }
+                
                 if let selectedOSVersion = selectedOSVersion,
                    let selectedData = dashboardManager.osVersionData.first(where: { $0.version == selectedOSVersion }) {
                     
@@ -389,6 +440,12 @@ struct DashboardView: View {
                             Text("\(selectedData.count) devices")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                            
+                            // Click indicator
+                            Text("Click to search")
+                                .font(.caption2)
+                                .foregroundColor(.blue)
+                                .opacity(0.8)
                         }
                         .padding(8)
                         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 6))
@@ -485,33 +542,46 @@ struct DashboardView: View {
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
                             ForEach(Array(dashboardManager.deviceModelData.enumerated()), id: \.element.model) { index, item in
-                                HStack(spacing: DesignSystem.Spacing.sm) {
-                                    Circle()
-                                        .fill(colorForModelAtIndex(index))
-                                        .frame(width: 12, height: 12)
-                                    
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(item.model)
-                                            .font(.caption)
-                                            .fontWeight(.medium)
-                                            .lineLimit(2)
-                                            .multilineTextAlignment(.leading)
+                                Button(action: {
+                                    onModelSearch?(item.model, dashboardManager.cachedDashboardData, dashboardManager.currentSearchName)
+                                }) {
+                                    HStack(spacing: DesignSystem.Spacing.sm) {
+                                        Circle()
+                                            .fill(colorForModelAtIndex(index))
+                                            .frame(width: 12, height: 12)
                                         
-                                        Text("\(item.count) devices")
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(item.model)
+                                                .font(.caption)
+                                                .fontWeight(.medium)
+                                                .lineLimit(2)
+                                                .multilineTextAlignment(.leading)
+                                            
+                                            Text("\(item.count) devices")
+                                                .font(.caption2)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        // Click indicator
+                                        Image(systemName: "magnifyingglass")
                                             .font(.caption2)
                                             .foregroundColor(.secondary)
+                                            .opacity(selectedDeviceModel == item.model ? 1.0 : 0.0)
                                     }
-                                    
-                                    Spacer()
+                                    .padding(.vertical, 4)
+                                    .padding(.horizontal, 6)
+                                    .background(selectedDeviceModel == item.model ? Color.accentColor.opacity(0.15) : Color.clear)
+                                    .cornerRadius(6)
+                                    .contentShape(Rectangle())
                                 }
-                                .padding(.vertical, 4)
-                                .padding(.horizontal, 6)
-                                .background(selectedDeviceModel == item.model ? Color.accentColor.opacity(0.15) : Color.clear)
-                                .cornerRadius(6)
+                                .buttonStyle(PlainButtonStyle())
                                 .onHover { isHovering in
                                     selectedDeviceModel = isHovering ? item.model : nil
                                 }
                                 .animation(.easeInOut(duration: 0.2), value: selectedDeviceModel)
+                                .help("Click to search for \(item.model) devices")
                             }
                         }
                     }
@@ -642,7 +712,7 @@ struct DeviceModelSelectionModifier: ViewModifier {
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        DashboardView(dashboardManager: DashboardManager())
             .environmentObject(AuthenticationManager())
     }
 }

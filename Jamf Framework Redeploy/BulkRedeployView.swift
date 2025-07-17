@@ -388,7 +388,7 @@ struct BulkRedeployView: View {
             )
             
             switch result {
-            case .success(let message):
+            case .success(_):
                 // Get the computer ID for this device to enable links
                 let deviceStateResult = await actionFramework.getDeviceManagementState(
                     jssURL: authManager.jssURL,
@@ -403,7 +403,7 @@ struct BulkRedeployView: View {
                 csvHandler.updateComputerStatus(computer.id, status: .failed, error: error)
                 errorCount += 1
             
-            case .partialSuccess(let message, let details):
+            case .partialSuccess(_, _):
                 // Treat partial success as success for individual devices
                 let deviceStateResult = await actionFramework.getDeviceManagementState(
                     jssURL: authManager.jssURL,

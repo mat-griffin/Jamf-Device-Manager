@@ -37,7 +37,7 @@ class DashboardManager: ObservableObject {
     @Published var checkInStatusData: [CheckInStatusData] = []
     
     // Caching (like jamfdata project)
-    private var cachedDashboardData: [ComputerDashboardInfo] = []
+    var cachedDashboardData: [ComputerDashboardInfo] = []
     private var lastCacheUpdate: Date? = nil
     private var cachedSearchID: Int? = nil
     private let cacheLifetime: TimeInterval = 300 // 5 minutes

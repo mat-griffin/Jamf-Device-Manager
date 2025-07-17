@@ -27,6 +27,14 @@ struct SearchJamfView: View {
     @State private var searchComputerName = false
     @State private var searchProgress: Double = 0.0
     @State private var searchTask: Task<Void, Never>?
+    @State private var dashboardSearchModel: String? = nil
+    @State private var dashboardSearchOSVersion: String? = nil
+    @State private var showDashboardSearchInfo = false
+    @State private var dashboardDeviceData: [ComputerDashboardInfo] = []
+    @State private var dashboardReportName: String = ""
+    
+    // External search trigger
+    var onExternalModelSearch: ((String) -> Void)?
     
     var body: some View {
         GeometryReader { geometry in
@@ -41,6 +49,58 @@ struct SearchJamfView: View {
                             subtitle: "Search for devices in your Jamf Pro environment. Enter a serial number, computer name, or username to find device information.",
                             iconColor: DesignSystem.Colors.info
                         )
+                        
+                        // Dashboard Search Info Section
+                        if showDashboardSearchInfo {
+                            CardContainer {
+                                VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+                                    HStack {
+                                        if dashboardSearchModel != nil {
+                                            Label("Dashboard Model Search", systemImage: "chart.bar.xaxis")
+                                                .font(.headline)
+                                                .foregroundColor(.blue)
+                                        } else if dashboardSearchOSVersion != nil {
+                                            Label("Dashboard OS Version Search", systemImage: "gear.circle")
+                                                .font(.headline)
+                                                .foregroundColor(.blue)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            showDashboardSearchInfo = false
+                                            dashboardSearchModel = nil
+                                            dashboardSearchOSVersion = nil
+                                            dashboardReportName = ""
+                                        }) {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .foregroundColor(.secondary)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                                        if let model = dashboardSearchModel {
+                                            Text("You clicked on '\(model)' from the Dashboard chart for the '\(dashboardReportName)' Jamf Advanced Computer search.")
+                                                .font(.subheadline)
+                                                .foregroundColor(.primary)
+                                            
+                                            Text("This search is limited to the \(dashboardDeviceData.count) devices from your selected Dashboard Advanced Search, not all devices in Jamf Pro. Only devices matching '\(model)' from that group are shown below.")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        } else if let osVersion = dashboardSearchOSVersion {
+                                            Text("You clicked on 'macOS \(osVersion)' from the Dashboard chart for the '\(dashboardReportName)' Jamf Advanced Computer search.")
+                                                .font(.subheadline)
+                                                .foregroundColor(.primary)
+                                            
+                                            Text("This search is limited to the \(dashboardDeviceData.count) devices from your selected Dashboard Advanced Search, not all devices in Jamf Pro. Only devices running macOS \(osVersion) from that group are shown below.")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         
                         // Search Input Section
                         CardContainer {
@@ -323,6 +383,47 @@ struct SearchJamfView: View {
                                     toggleDeviceDetails(device)
                                 }
                             )
+                            
+                            // Text version for copying all results
+                            CardContainer {
+                                VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+                                    HStack {
+                                        Label("All Search Results as Plain Text", systemImage: "doc.plaintext")
+                                            .font(.headline)
+                                            .foregroundColor(.primary)
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            copyAllSearchResults()
+                                        }) {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "doc.on.doc")
+                                                    .foregroundColor(.secondary)
+                                                    .font(.system(size: 12, weight: .medium))
+                                                Text("Copy All")
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(Color.gray.opacity(0.1))
+                                            .cornerRadius(6)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                    
+                                    ScrollView {
+                                        Text(searchResultsText)
+                                            .font(.caption)
+                                            .foregroundColor(.primary)
+                                            .textSelection(.enabled)
+                                            .multilineTextAlignment(.leading)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .frame(maxHeight: 200)
+                                }
+                            }
                         }
                         
                         Spacer(minLength: 0)
@@ -337,6 +438,22 @@ struct SearchJamfView: View {
             Button("OK") { }
         } message: {
             Text(alertMessage)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("DashboardModelSearch"))) { notification in
+            if let data = notification.object as? [String: Any],
+               let model = data["model"] as? String,
+               let dashboardData = data["dashboardData"] as? [ComputerDashboardInfo],
+               let reportName = data["reportName"] as? String {
+                performDashboardModelSearch(model, dashboardData: dashboardData, reportName: reportName)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("DashboardOSVersionSearch"))) { notification in
+            if let data = notification.object as? [String: Any],
+               let osVersion = data["osVersion"] as? String,
+               let dashboardData = data["dashboardData"] as? [ComputerDashboardInfo],
+               let reportName = data["reportName"] as? String {
+                performDashboardOSVersionSearch(osVersion, dashboardData: dashboardData, reportName: reportName)
+            }
         }
     }
     
@@ -844,6 +961,408 @@ struct SearchJamfView: View {
             }
         }
     }
+    
+    private var searchResultsText: String {
+        var text = "Search Results (\(searchResults.count) devices)\n"
+        
+        if showDashboardSearchInfo {
+            if let model = dashboardSearchModel {
+                text += "Search Type: Dashboard Model Search\n"
+                text += "Model: \(model)\n"
+            } else if let osVersion = dashboardSearchOSVersion {
+                text += "Search Type: Dashboard OS Version Search\n"
+                text += "macOS Version: \(osVersion)\n"
+            }
+            text += "Advanced Search: \(dashboardReportName)\n"
+            text += "Search Scope: Limited to \(dashboardDeviceData.count) devices from Dashboard Advanced Search\n"
+        } else {
+            text += "Search Query: \(searchQuery)\n"
+            text += "Management Filter: \(managementFilter == .all ? "All Devices" : managementFilter == .managed ? "Managed Only" : "Unmanaged Only")\n"
+        }
+        
+        text += "Generated: \(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))\n\n"
+        
+        for (index, device) in searchResults.enumerated() {
+            text += "Device \(index + 1):\n"
+            text += "Name: \(device.name)\n"
+            text += "Serial: \(device.serialNumber)\n"
+            text += "Management State: \(device.isManaged ? "Managed" : "Unmanaged")\n"
+            
+            if !device.userFullName.isEmpty {
+                text += "User: \(device.userFullName)\n"
+            }
+            
+            if !device.username.isEmpty {
+                text += "Username: \(device.username)\n"
+            }
+            
+            text += "Model: \(device.model)\n"
+            
+            if let details = deviceDetails[device.id] {
+                text += "Computer ID: \(device.id)\n"
+                text += "Operating System: \(details.operatingSystem)\n"
+                text += "Processor: \(details.processor)\n"
+                text += "Memory: \(details.memory)\n"
+                text += "Last Inventory: \(details.lastInventoryUpdate)\n"
+                text += "Last Check-in: \(details.lastCheckIn)\n"
+                
+                if let location = details.computerDetail.location {
+                    if let email = location.emailAddress, !email.isEmpty {
+                        text += "Email: \(email)\n"
+                    }
+                    if let department = location.department, !department.isEmpty {
+                        text += "Department: \(department)\n"
+                    }
+                    if let building = location.building, !building.isEmpty {
+                        text += "Building: \(building)\n"
+                    }
+                }
+            }
+            
+            text += "\n"
+        }
+        
+        return text
+    }
+    
+    private func copyAllSearchResults() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(searchResultsText, forType: .string)
+    }
+    
+    // MARK: - Dashboard Model Search Integration
+    
+    func performDashboardModelSearch(_ model: String, dashboardData: [ComputerDashboardInfo], reportName: String) {
+        dashboardSearchModel = model
+        dashboardSearchOSVersion = nil
+        dashboardDeviceData = dashboardData
+        dashboardReportName = reportName
+        showDashboardSearchInfo = true
+        
+        // Set up advanced search for model
+        advancedSearchQuery = model
+        searchModel = true
+        searchSerial = false
+        searchUser = false
+        searchComputerName = false
+        showAdvancedSearch = true
+        
+        // Clear existing results
+        searchResults = []
+        
+        // Perform the dashboard-scoped search
+        performDashboardScopedSearch()
+    }
+    
+    func performDashboardOSVersionSearch(_ osVersion: String, dashboardData: [ComputerDashboardInfo], reportName: String) {
+        dashboardSearchModel = nil
+        dashboardSearchOSVersion = osVersion
+        dashboardDeviceData = dashboardData
+        dashboardReportName = reportName
+        showDashboardSearchInfo = true
+        
+        // Set up advanced search for OS version
+        advancedSearchQuery = osVersion
+        searchModel = false
+        searchSerial = false
+        searchUser = false
+        searchComputerName = false
+        showAdvancedSearch = true
+        
+        // Clear existing results
+        searchResults = []
+        
+        // Perform the dashboard-scoped search
+        performDashboardScopedOSVersionSearch()
+    }
+    
+    private func performDashboardScopedSearch() {
+        isSearching = true
+        searchProgress = 0.0
+        
+        Task {
+            let authenticated = await authManager.ensureAuthenticated()
+            
+            guard authenticated else {
+                await MainActor.run {
+                    isSearching = false
+                    searchProgress = 0.0
+                    alertTitle = "Authentication Required"
+                    alertMessage = "Please authenticate with Jamf Pro first by going to Settings (⌘,)."
+                    showAlert = true
+                }
+                return
+            }
+            
+            // Filter dashboard data to only devices matching the model
+            let filteredDashboardData = dashboardDeviceData.filter { device in
+                guard let deviceModel = device.model else { return false }
+                return deviceModel.lowercased().contains(advancedSearchQuery.lowercased())
+            }
+            
+            await MainActor.run {
+                searchProgress = 0.5
+            }
+            
+            // Convert dashboard data to search results and fetch detailed info
+            var results: [SearchResult] = []
+            
+            // Get a fresh token for detailed API calls
+            guard let freshToken = await authManager.getFreshToken() else {
+                await MainActor.run {
+                    isSearching = false
+                    searchProgress = 0.0
+                    alertTitle = "Authentication Error"
+                    alertMessage = "Failed to get authentication token for detailed device information."
+                    showAlert = true
+                }
+                return
+            }
+            
+            let jamfAPI = JamfProAPI()
+            let totalDevices = filteredDashboardData.count
+            
+            for (index, dashboardDevice) in filteredDashboardData.enumerated() {
+                // Update progress
+                await MainActor.run {
+                    searchProgress = 0.5 + (Double(index) / Double(totalDevices)) * 0.5
+                }
+                
+                // Fetch detailed computer information to get user data
+                let (computerDetail, statusCode) = await jamfAPI.getComputerDetails(
+                    jssURL: authManager.jssURL,
+                    authToken: freshToken,
+                    computerID: dashboardDevice.id
+                )
+                
+                // Check if API call was successful
+                guard let computerDetail = computerDetail, statusCode == 200 else {
+                    print("⚠️ Failed to get detailed information for device ID \(dashboardDevice.id), status: \(statusCode ?? 0)")
+                    continue // Skip this device if we can't get detailed info
+                }
+                
+                // Extract user information from detailed data
+                let username = computerDetail.location?.username ?? ""
+                let userFullName = computerDetail.location?.realname ?? ""
+                
+                let searchResult = SearchResult(
+                    id: dashboardDevice.id,
+                    name: dashboardDevice.name,
+                    serialNumber: dashboardDevice.serialNumber ?? "",
+                    username: username,
+                    userFullName: userFullName,
+                    model: dashboardDevice.model ?? "Mac",
+                    isManaged: true // Dashboard data is from managed devices
+                )
+                results.append(searchResult)
+                
+                // Pre-populate device details with full information from API
+                let osInfo = computerDetail.hardware?.osName ?? "macOS"
+                let osVersion = computerDetail.hardware?.osVersion ?? dashboardDevice.osVersion ?? ""
+                let fullOSInfo = "\(osInfo) \(osVersion)".trimmingCharacters(in: .whitespaces)
+                
+                let processorInfo = computerDetail.hardware?.processorType ?? "Unknown Processor"
+                let memoryInfo = computerDetail.hardware?.totalRAM.map { "\($0) MB" } ?? "Unknown"
+                let storageInfo = computerDetail.hardware?.totalDisk.map { "\($0) GB" } ?? "N/A"
+                
+                let lastInventory = computerDetail.general.lastInventoryUpdate ?? dashboardDevice.lastCheckIn?.formatted() ?? "N/A"
+                let lastCheckIn = computerDetail.general.lastContactTime ?? dashboardDevice.lastCheckIn?.formatted() ?? "N/A"
+                let enrollmentDate = computerDetail.general.lastEnrolledDate ?? "N/A"
+                
+                deviceDetails[searchResult.id] = DetailedDeviceInfo(
+                    computerDetail: computerDetail,
+                    lastInventoryUpdate: lastInventory,
+                    enrollmentDate: enrollmentDate,
+                    operatingSystem: fullOSInfo,
+                    processor: processorInfo,
+                    memory: memoryInfo,
+                    storage: storageInfo,
+                    lastCheckIn: lastCheckIn
+                )
+            }
+            
+            await MainActor.run {
+                isSearching = false
+                searchProgress = 0.0
+                searchResults = results
+                
+                if results.isEmpty {
+                    alertTitle = "No Results Found"
+                    alertMessage = "No devices found matching '\(advancedSearchQuery)' in the Dashboard data. This search is limited to the \(dashboardDeviceData.count) devices from the selected Advanced Search."
+                    showAlert = true
+                }
+            }
+        }
+    }
+    
+    private func performDashboardScopedOSVersionSearch() {
+        isSearching = true
+        searchProgress = 0.0
+        
+        Task {
+            let authenticated = await authManager.ensureAuthenticated()
+            
+            guard authenticated else {
+                await MainActor.run {
+                    isSearching = false
+                    searchProgress = 0.0
+                    alertTitle = "Authentication Required"
+                    alertMessage = "Please authenticate with Jamf Pro first by going to Settings (⌘,)."
+                    showAlert = true
+                }
+                return
+            }
+            
+            // Filter dashboard data to only devices matching the OS version
+            let filteredDashboardData = dashboardDeviceData.filter { device in
+                guard let deviceOSVersion = device.osVersion else { return false }
+                return deviceOSVersion.lowercased().contains(advancedSearchQuery.lowercased())
+            }
+            
+            await MainActor.run {
+                searchProgress = 0.5
+            }
+            
+            // Convert dashboard data to search results and fetch detailed info
+            var results: [SearchResult] = []
+            
+            // Get a fresh token for detailed API calls
+            guard let freshToken = await authManager.getFreshToken() else {
+                await MainActor.run {
+                    isSearching = false
+                    searchProgress = 0.0
+                    alertTitle = "Authentication Error"
+                    alertMessage = "Failed to get authentication token for detailed device information."
+                    showAlert = true
+                }
+                return
+            }
+            
+            let jamfAPI = JamfProAPI()
+            let totalDevices = filteredDashboardData.count
+            
+            for (index, dashboardDevice) in filteredDashboardData.enumerated() {
+                // Update progress
+                await MainActor.run {
+                    searchProgress = 0.5 + (Double(index) / Double(totalDevices)) * 0.5
+                }
+                
+                // Fetch detailed computer information to get user data
+                let (computerDetail, statusCode) = await jamfAPI.getComputerDetails(
+                    jssURL: authManager.jssURL,
+                    authToken: freshToken,
+                    computerID: dashboardDevice.id
+                )
+                
+                // Check if API call was successful
+                guard let computerDetail = computerDetail, statusCode == 200 else {
+                    print("⚠️ Failed to get detailed information for device ID \(dashboardDevice.id), status: \(statusCode ?? 0)")
+                    continue // Skip this device if we can't get detailed info
+                }
+                
+                // Extract user information from detailed data
+                let username = computerDetail.location?.username ?? ""
+                let userFullName = computerDetail.location?.realname ?? ""
+                
+                let searchResult = SearchResult(
+                    id: dashboardDevice.id,
+                    name: dashboardDevice.name,
+                    serialNumber: dashboardDevice.serialNumber ?? "",
+                    username: username,
+                    userFullName: userFullName,
+                    model: dashboardDevice.model ?? "Mac",
+                    isManaged: true // Dashboard data is from managed devices
+                )
+                results.append(searchResult)
+                
+                // Pre-populate device details with full information from API
+                let osInfo = computerDetail.hardware?.osName ?? "macOS"
+                let osVersion = computerDetail.hardware?.osVersion ?? dashboardDevice.osVersion ?? ""
+                let fullOSInfo = "\(osInfo) \(osVersion)".trimmingCharacters(in: .whitespaces)
+                
+                let processorInfo = computerDetail.hardware?.processorType ?? "Unknown Processor"
+                let memoryInfo = computerDetail.hardware?.totalRAM.map { "\($0) MB" } ?? "Unknown"
+                let storageInfo = computerDetail.hardware?.totalDisk.map { "\($0) GB" } ?? "N/A"
+                
+                let lastInventory = computerDetail.general.lastInventoryUpdate ?? dashboardDevice.lastCheckIn?.formatted() ?? "N/A"
+                let lastCheckIn = computerDetail.general.lastContactTime ?? dashboardDevice.lastCheckIn?.formatted() ?? "N/A"
+                let enrollmentDate = computerDetail.general.lastEnrolledDate ?? "N/A"
+                
+                deviceDetails[searchResult.id] = DetailedDeviceInfo(
+                    computerDetail: computerDetail,
+                    lastInventoryUpdate: lastInventory,
+                    enrollmentDate: enrollmentDate,
+                    operatingSystem: fullOSInfo,
+                    processor: processorInfo,
+                    memory: memoryInfo,
+                    storage: storageInfo,
+                    lastCheckIn: lastCheckIn
+                )
+            }
+            
+            await MainActor.run {
+                isSearching = false
+                searchProgress = 0.0
+                searchResults = results
+                
+                if results.isEmpty {
+                    alertTitle = "No Results Found"
+                    alertMessage = "No devices found running macOS \(advancedSearchQuery) in the Dashboard data. This search is limited to the \(dashboardDeviceData.count) devices from the selected Advanced Search."
+                    showAlert = true
+                }
+            }
+        }
+    }
+    
+    private func createMockComputerDetail(from dashboardDevice: ComputerDashboardInfo, username: String = "", userFullName: String = "", emailAddress: String = "") -> ComputerDetail {
+        // Create a mock ComputerDetail from dashboard data
+        // This is a simplified version just for display purposes
+        let general = General(
+            id: dashboardDevice.id,
+            name: dashboardDevice.name,
+            serialNumber: dashboardDevice.serialNumber,
+            udid: nil,
+            remoteManagement: RemoteManagement(managed: true, managementUsername: nil),
+            lastInventoryUpdate: dashboardDevice.lastCheckIn?.formatted(),
+            reportDate: dashboardDevice.lastCheckIn?.formatted(),
+            lastContactTime: dashboardDevice.lastCheckIn?.formatted(),
+            lastEnrolledDate: nil
+        )
+        
+        let hardware = Hardware(
+            model: dashboardDevice.model,
+            modelIdentifier: nil,
+            osName: "macOS",
+            osVersion: dashboardDevice.osVersion,
+            osBuild: nil,
+            processorType: nil,
+            processorArchitecture: nil,
+            processorSpeed: nil,
+            numberOfProcessors: nil,
+            numberOfCores: nil,
+            totalRAM: nil,
+            totalDisk: nil,
+            availableDisk: nil
+        )
+        
+        let location = Location(
+            username: username.isEmpty ? nil : username,
+            realname: userFullName.isEmpty ? nil : userFullName,
+            emailAddress: emailAddress.isEmpty ? nil : emailAddress,
+            position: nil,
+            phone: nil,
+            department: nil,
+            building: nil,
+            room: nil
+        )
+        
+        return ComputerDetail(
+            general: general,
+            location: location,
+            hardware: hardware
+        )
+    }
 }
 
 // MARK: - Search Results View
@@ -888,61 +1407,76 @@ struct SearchResultRow: View {
     var body: some View {
         VStack(spacing: 0) {
             // Main row content
-            Button(action: onToggle) {
-                HStack(spacing: DesignSystem.Spacing.md) {
-                    // Device Icon
-                    Image(systemName: "desktopcomputer")
-                        .font(.title2)
-                        .foregroundColor(.secondary)
-                        .frame(width: 40)
+            HStack(spacing: DesignSystem.Spacing.md) {
+                // Device Icon
+                Image(systemName: "desktopcomputer")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                    .frame(width: 40)
+                
+                // Device Info
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                    HStack {
+                        Text(device.name)
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        StatusIndicator(
+                            isConnected: device.isManaged,
+                            text: device.isManaged ? "Managed" : "Unmanaged"
+                        )
+                    }
                     
-                    // Device Info
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                        HStack {
-                            Text(device.name)
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                            
-                            StatusIndicator(
-                                isConnected: device.isManaged,
-                                text: device.isManaged ? "Managed" : "Unmanaged"
-                            )
-                        }
-                        
-                        Text("Serial: \(device.serialNumber)")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        
-                        if !device.userFullName.isEmpty {
-                            Text("User: \(device.userFullName)")
-                                .font(.subheadline)
+                    Text(deviceSummaryText(device))
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .textSelection(.enabled)
+                        .multilineTextAlignment(.leading)
+                }
+                
+                Spacer()
+                
+                // Action buttons
+                HStack(spacing: 8) {
+                    // Copy button
+                    Button(action: {
+                        copyDeviceInfo()
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "doc.on.doc")
                                 .foregroundColor(.secondary)
-                        }
-                        
-                        if !device.username.isEmpty {
-                            Text("Username: \(device.username)")
+                                .font(.system(size: 12, weight: .medium))
+                            Text("Copy")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
-                        
-                        Text("Model: \(device.model)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        .frame(width: 60, height: 24)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(6)
                     }
+                    .buttonStyle(PlainButtonStyle())
                     
-                    Spacer()
-                    
-                    // Expand/Collapse Icon
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundColor(.secondary)
-                        .font(.system(size: 14, weight: .medium))
+                    // Expand/Collapse Button
+                    Button(action: onToggle) {
+                        HStack(spacing: 4) {
+                            Image(systemName: isExpanded ? "eye.slash" : "eye")
+                                .foregroundColor(.secondary)
+                                .font(.system(size: 12, weight: .medium))
+                            Text(isExpanded ? "Hide" : "Show")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(width: 60, height: 24)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(6)
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .padding(DesignSystem.Spacing.md)
-                .background(Color.clear)
             }
-            .buttonStyle(PlainButtonStyle())
+            .padding(DesignSystem.Spacing.md)
+            .background(Color.white)
             
             // Expanded details section
             if isExpanded {
@@ -975,13 +1509,78 @@ struct SearchResultRow: View {
                 .padding(.bottom, DesignSystem.Spacing.md)
             }
         }
-        .background(Color.clear)
+        .background(Color.white)
         .cornerRadius(DesignSystem.CornerRadius.md)
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.CornerRadius.md)
                 .stroke(Color.gray.opacity(0.2), lineWidth: 1)
         )
         .animation(.easeInOut(duration: 0.3), value: isExpanded)
+    }
+    
+    private func deviceSummaryText(_ device: SearchResult) -> String {
+        var text = "Serial: \(device.serialNumber)\n"
+        
+        if !device.userFullName.isEmpty {
+            text += "User: \(device.userFullName)\n"
+        }
+        
+        if !device.username.isEmpty {
+            text += "Username: \(device.username)\n"
+        }
+        
+        text += "Model: \(device.model)"
+        
+        return text
+    }
+    
+    private func copyDeviceInfo() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        
+        var text = "\(device.name)\n"
+        text += "Serial: \(device.serialNumber)\n"
+        
+        if !device.userFullName.isEmpty {
+            text += "User: \(device.userFullName)\n"
+        }
+        
+        if !device.username.isEmpty {
+            text += "Username: \(device.username)\n"
+        }
+        
+        text += "Model: \(device.model)\n"
+        text += "Management State: \(device.isManaged ? "Managed" : "Unmanaged")"
+        
+        // Add detailed info if available
+        if let details = deviceDetails {
+            text += "\n\nDevice Information\n"
+            text += "Computer ID: \(device.id)\n"
+            text += "Serial Number: \(device.serialNumber)\n"
+            text += "Management State: \(device.isManaged ? "Managed" : "Unmanaged")\n"
+            
+            if let location = details.computerDetail.location {
+                if let email = location.emailAddress, !email.isEmpty {
+                    text += "Email: \(email)\n"
+                }
+                if let department = location.department, !department.isEmpty {
+                    text += "Department: \(department)\n"
+                }
+                if let building = location.building, !building.isEmpty {
+                    text += "Building: \(building)\n"
+                }
+            }
+            
+            text += "\nHardware Specifications\n"
+            text += "Operating System: \(details.operatingSystem)\n"
+            text += "Processor: \(details.processor)\n"
+            text += "Memory: \(details.memory)\n"
+            text += "Model: \(device.model)\n"
+            text += "Last Inventory: \(details.lastInventoryUpdate)\n"
+            text += "Last Check-in: \(details.lastCheckIn)"
+        }
+        
+        pasteboard.setString(text, forType: .string)
     }
 }
 
@@ -1000,19 +1599,21 @@ struct ExpandedDeviceDetails: View {
                         .font(.headline)
                         .foregroundColor(.primary)
                     
-                    InfoRow(label: "Computer ID", value: String(device.id))
-                    InfoRow(label: "Serial Number", value: device.serialNumber)
-                    InfoRow(label: "Management State", value: device.isManaged ? "Managed" : "Unmanaged")
-                    
-                    if let location = deviceDetails.computerDetail.location {
-                        if let email = location.emailAddress, !email.isEmpty {
-                            InfoRow(label: "Email", value: email)
-                        }
-                        if let department = location.department, !department.isEmpty {
-                            InfoRow(label: "Department", value: department)
-                        }
-                        if let building = location.building, !building.isEmpty {
-                            InfoRow(label: "Building", value: building)
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                        InfoRow(label: "Computer ID", value: String(device.id))
+                        InfoRow(label: "Serial Number", value: device.serialNumber)
+                        InfoRow(label: "Management State", value: device.isManaged ? "Managed" : "Unmanaged")
+                        
+                        if let location = deviceDetails.computerDetail.location {
+                            if let email = location.emailAddress, !email.isEmpty {
+                                InfoRow(label: "Email", value: email)
+                            }
+                            if let department = location.department, !department.isEmpty {
+                                InfoRow(label: "Department", value: department)
+                            }
+                            if let building = location.building, !building.isEmpty {
+                                InfoRow(label: "Building", value: building)
+                            }
                         }
                     }
                 }
@@ -1025,18 +1626,59 @@ struct ExpandedDeviceDetails: View {
                         .font(.headline)
                         .foregroundColor(.primary)
                     
-                    InfoRow(label: "Operating System", value: deviceDetails.operatingSystem)
-                    InfoRow(label: "Processor", value: deviceDetails.processor)
-                    InfoRow(label: "Memory", value: deviceDetails.memory)
-                    InfoRow(label: "Model", value: device.model)
-                    InfoRow(label: "Last Inventory", value: deviceDetails.lastInventoryUpdate)
-                    InfoRow(label: "Last Check-in", value: deviceDetails.lastCheckIn)
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                        InfoRow(label: "Operating System", value: deviceDetails.operatingSystem)
+                        InfoRow(label: "Processor", value: deviceDetails.processor)
+                        InfoRow(label: "Memory", value: deviceDetails.memory)
+                        InfoRow(label: "Model", value: device.model)
+                        InfoRow(label: "Last Inventory", value: deviceDetails.lastInventoryUpdate)
+                        InfoRow(label: "Last Check-in", value: deviceDetails.lastCheckIn)
+                    }
                 }
             }
         }
         .padding(DesignSystem.Spacing.md)
         .background(Color.gray.opacity(0.05))
         .cornerRadius(DesignSystem.CornerRadius.md)
+        .contextMenu {
+            Button(action: {
+                copyAllDeviceInfo()
+            }) {
+                Label("Copy All Device Information", systemImage: "doc.on.doc")
+            }
+        }
+    }
+    
+    private func copyAllDeviceInfo() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        
+        var text = "Device Information\n"
+        text += "Computer ID: \(device.id)\n"
+        text += "Serial Number: \(device.serialNumber)\n"
+        text += "Management State: \(device.isManaged ? "Managed" : "Unmanaged")\n"
+        
+        if let location = deviceDetails.computerDetail.location {
+            if let email = location.emailAddress, !email.isEmpty {
+                text += "Email: \(email)\n"
+            }
+            if let department = location.department, !department.isEmpty {
+                text += "Department: \(department)\n"
+            }
+            if let building = location.building, !building.isEmpty {
+                text += "Building: \(building)\n"
+            }
+        }
+        
+        text += "\nHardware Specifications\n"
+        text += "Operating System: \(deviceDetails.operatingSystem)\n"
+        text += "Processor: \(deviceDetails.processor)\n"
+        text += "Memory: \(deviceDetails.memory)\n"
+        text += "Model: \(device.model)\n"
+        text += "Last Inventory: \(deviceDetails.lastInventoryUpdate)\n"
+        text += "Last Check-in: \(deviceDetails.lastCheckIn)"
+        
+        pasteboard.setString(text, forType: .string)
     }
 }
 
@@ -1047,15 +1689,10 @@ struct InfoRow: View {
     
     var body: some View {
         HStack {
-            Text("\(label):")
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundColor(.secondary)
-                .frame(width: 80, alignment: .leading)
-            
-            Text(value)
+            Text("\(label): \(value)")
                 .font(.caption)
                 .foregroundColor(.primary)
+                .textSelection(.enabled)
             
             Spacer()
         }

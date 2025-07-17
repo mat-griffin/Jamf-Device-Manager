@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild:*)",
+      "Bash(grep:*)",
+      "Bash(mv:*)",
+      "Bash(open:*)",
+      "Bash(find:*)",
+      "Bash(git checkout:*)",
+      "Bash(plutil:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(swiftc:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(swift build)",
+      "Bash(timeout 30 xcodebuild:*)",
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Bash(xcrun xcodebuild:*)",
+      "Bash(cp:*)",
+      "Bash(xcrun swiftc:*)",
+      "Bash(echo \"Build status: $?\")"
+    ],
+    "deny": []
+  }
+}

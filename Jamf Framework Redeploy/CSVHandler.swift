@@ -41,7 +41,7 @@ class CSVHandler: ObservableObject {
         // Try to read the file even if security scoped resource access fails
         // This might work for drag-and-drop scenarios
         
-        let content = try String(contentsOf: url)
+        let content = try String(contentsOf: url, encoding: .utf8)
         let lines = content.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         
         guard !lines.isEmpty else {

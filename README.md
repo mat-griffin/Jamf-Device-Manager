@@ -262,13 +262,17 @@ See the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed enterprise dep
 
 ## 🔄 Version History
 
-### v2.2.3 (Current)
+### v2.3
+- **New**: Added copy function to copy search results
+- **New**: Added report chart to search function, clicking on a bar chart column or donut key will display those devices in the search.
+
+### v2.2.3
 Bug fix
 
-### v2.2.2 (Current)
+### v2.2.2
 Bug fix
 
-### v2.2.1 (Current)
+### v2.2.1
 Bug fix
 
 ### v2.2.0 - Dashboard
@@ -301,6 +305,7 @@ Bug fix
 
 ### v1.0 - Initial Release
 - Single device framework redeploy
+
 - Basic API integration
 - Simple authentication
 

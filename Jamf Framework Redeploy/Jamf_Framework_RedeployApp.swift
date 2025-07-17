@@ -18,15 +18,18 @@ struct Jamf_Framework_RedeployApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(authManager)
+                .textSelection(.enabled)
                 .frame(
                     minWidth: 600, maxWidth: .infinity,
                     minHeight: 450, maxHeight: .infinity)
                 .sheet(isPresented: $showingSettings) {
                     SettingsView(authManager: authManager, isPresented: $showingSettings)
+                        .textSelection(.enabled)
                         .frame(minWidth: 500, minHeight: 600)
                 }
                 .sheet(isPresented: $showingAbout) {
                     AboutView(isPresented: $showingAbout)
+                        .textSelection(.enabled)
                 }
                 .onAppear {
                     if let window = NSApplication.shared.windows.first {

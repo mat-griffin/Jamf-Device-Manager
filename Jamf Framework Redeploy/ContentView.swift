@@ -27,6 +27,16 @@ struct ContentView: View {
     // Shared CSV handlers to persist data across tab changes
     @StateObject private var massRedeployCSVHandler = CSVHandler()
     @StateObject private var massManageCSVHandler = CSVHandler()
+    
+    // Shared Dashboard manager to persist data across tab changes
+    @StateObject private var dashboardManager = DashboardManager()
+    
+    // Dashboard to Search integration
+    @State private var pendingModelSearch: String? = nil
+    @State private var pendingOSVersionSearch: String? = nil
+    @State private var pendingDashboardData: [ComputerDashboardInfo] = []
+    @State private var pendingReportName: String = ""
+    @State private var pendingSearchType: String = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -190,9 +200,12 @@ struct ContentView: View {
             VStack(alignment: .leading) {
                 Group {
                     if selectedTab == 0 {
-                        DashboardView()
+                        DashboardView(dashboardManager: dashboardManager, onModelSearch: handleModelSearch, onOSVersionSearch: handleOSVersionSearch)
                     } else if selectedTab == 1 {
                         SearchJamfView()
+                            .onAppear {
+                                handlePendingModelSearch()
+                            }
                     } else if selectedTab == 2 {
                         SingleRedeployTabView(
                             jamfURL: $jamfURL,
@@ -268,10 +281,14 @@ struct ContentView: View {
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .onAppear {
             loadCredentials()
+            dashboardManager.setAuthManager(authManager)
         }
         .onChange(of: jamfURL) { _, _ in saveCredentials() }
         .onChange(of: userName) { _, _ in saveCredentials() }
         .onChange(of: savePassword) { _, _ in saveCredentials() }
+        .onChange(of: authManager.isAuthenticated) { _, _ in
+            dashboardManager.setAuthManager(authManager)
+        }
         .sheet(isPresented: $showingSettings) {
             SettingsView(authManager: authManager, isPresented: $showingSettings)
                 .frame(minWidth: 500, minHeight: 600)
@@ -319,6 +336,60 @@ struct ContentView: View {
         
         if savePassword && !userName.isEmpty && !password.isEmpty {
             Keychain().save(service: "co.uk.mallion.Jamf-Framework-Redeploy", account: userName, data: password)
+        }
+    }
+    
+    // MARK: - Dashboard to Search Integration
+    
+    private func handleModelSearch(_ model: String, _ dashboardData: [ComputerDashboardInfo], _ reportName: String) {
+        pendingModelSearch = model
+        pendingOSVersionSearch = nil
+        pendingDashboardData = dashboardData
+        pendingReportName = reportName
+        pendingSearchType = "model"
+        selectedTab = 1 // Switch to Search Jamf tab
+    }
+    
+    private func handleOSVersionSearch(_ osVersion: String, _ dashboardData: [ComputerDashboardInfo], _ reportName: String) {
+        pendingModelSearch = nil
+        pendingOSVersionSearch = osVersion
+        pendingDashboardData = dashboardData
+        pendingReportName = reportName
+        pendingSearchType = "osVersion"
+        selectedTab = 1 // Switch to Search Jamf tab
+    }
+    
+    private func handlePendingModelSearch() {
+        if let model = pendingModelSearch {
+            pendingModelSearch = nil
+            let dashboardData = pendingDashboardData
+            let reportName = pendingReportName
+            pendingDashboardData = []
+            pendingReportName = ""
+            
+            // Find the SearchJamfView and trigger the search
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                // This will be handled by the SearchJamfView when it appears
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("DashboardModelSearch"),
+                    object: ["model": model, "dashboardData": dashboardData, "reportName": reportName]
+                )
+            }
+        } else if let osVersion = pendingOSVersionSearch {
+            pendingOSVersionSearch = nil
+            let dashboardData = pendingDashboardData
+            let reportName = pendingReportName
+            pendingDashboardData = []
+            pendingReportName = ""
+            
+            // Find the SearchJamfView and trigger the OS version search
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                // This will be handled by the SearchJamfView when it appears
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("DashboardOSVersionSearch"),
+                    object: ["osVersion": osVersion, "dashboardData": dashboardData, "reportName": reportName]
+                )
+            }
         }
     }
 }
